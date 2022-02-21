@@ -8,6 +8,3 @@
 # Test
 ./test.py 2>\dev\null | tee Logs/test_log.txt
 
-# Noise test
-./noise.py 2>\dev\null | tee Logs/noise_log.txt
-
