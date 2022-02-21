@@ -3,12 +3,13 @@
 import os
 import numpy as np
 from scipy import io
+from numpy.random import randint as rand
 from sklearn.model_selection import train_test_split
 
 # DATA FUNCTIONS
 # =============================================================================
 
-def load_image(image_info, data_path):
+def _load_image(image_info, data_path):
     """Loads the image and the ground truth from a `mat` file.
     
     If the file is not present in the `data_path` directory, downloads
@@ -64,10 +65,10 @@ def load_image(image_info, data_path):
     
     return X, y
 
-def standardize(X):
+def _standardise(X):
     return (X - X.mean(axis=0)) / X.std(axis=0)
 
-def preprocess(X, y, standardization=False, only_labeled=True):
+def _preprocess(X, y, standardisation=False, only_labeled=True):
     
     # Reshape them to ignore spatiality
     X = X.reshape(-1, X.shape[2])
@@ -83,24 +84,92 @@ def preprocess(X, y, standardization=False, only_labeled=True):
     for new_class_num, old_class_num in enumerate(np.unique(y)):
         y[y == old_class_num] = new_class_num
     
-    if standardization:
-        X = standardize(X)
+    if standardisation:
+        X = _standardise(X)
     
     return X, y
 
-def getDataset(dataset, data_path, p_train, seed=35):
+# GET DATASET FUNCTION
+# =============================================================================
+
+def get_dataset(dataset, data_path, p_train, seed=35):
     
     # Load image
-    X, y = load_image(dataset, data_path)
+    X, y = _load_image(dataset, data_path)
     
     # Preprocess
-    X, y = preprocess(X, y, standardization=True)
+    X, y = _preprocess(X, y, standardisation=True)
     
     # Separate into train, val and test data sets
     p_test = 1 - p_train
     (X_train, X_test,
      y_train, y_test) = train_test_split(X, y, test_size=p_test,
                                          random_state=seed, stratify=y)
+    
+    return X_train, y_train, X_test, y_test
+
+# NOISY DATASET FUNCTIONS
+# =============================================================================
+
+def _generic_noise(X_test, p_noise):
+    """Generates random value variations for every feature of X_test"""
+    return rand(-2**15, 2**15 - 1, size=X_test.shape, dtype='int16')*p_noise
+
+def get_noisy_dataset(dataset, data_path, p_train, noises, seed=35):
+    
+    # Load image
+    X, y = _load_image(dataset, data_path)
+    
+    # Noise preprocessing settings (to standardise after generating the noise)
+    X_mean = X.reshape(-1, X.shape[2]).mean(axis=0)
+    X_std = X.reshape(-1, X.shape[2]).std(axis=0)
+    
+    # Preprocess
+    X, y = _preprocess(X, y, standardisation=False)
+    
+    # Separate into train, val and test data sets
+    p_test = 1 - p_train
+    (X_train, X_test,
+     y_train, y_test) = train_test_split(X, y, test_size=p_test,
+                                         random_state=seed, stratify=y)
+    
+    noisy_X_test = []
+    for noise in noises:
+        
+        # Add noise to X_test
+        noisy_X_test.append(X_test + _generic_noise(X_test, noise))
+    
+    # Standardise both, X_train and X_test
+    X_train = (X_train - X_mean) / X_std
+    X_test = (X_test - X_mean) / X_std
+    
+    # Return train and test sets
+    return X_train, y_train, noisy_X_test, y_test
+
+# MIXED DATASET FUNCTIONS
+# =============================================================================
+
+def _mix_classes(y_train, class_a, class_b):
+    """Mixes the labels between two classes"""
+    
+    # Get the indices of the pixels from both classes
+    index = (y_train == class_a) | (y_train == class_b)
+    
+    # Estract and shuffle their values
+    values = y_train[index]
+    np.random.shuffle(values)
+    
+    # Modify the original values with the new ones
+    y_train[index] = values
+
+def get_mixed_dataset(dataset, data_path, p_train, class_a, class_b, seed=35):
+    
+    # Get dataset
+    X_train, y_train, X_test, y_test = get_dataset(dataset, data_path, p_train,
+                                                   seed=seed)
+    
+    # Mix the labels between two classes
+    _mix_classes(y_train, class_a, class_b)
     
     return X_train, y_train, X_test, y_test
 

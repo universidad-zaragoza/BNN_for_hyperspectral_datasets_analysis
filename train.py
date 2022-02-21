@@ -5,16 +5,16 @@ import sys
 import time
 
 import tensorflow as tf
-import tensorflow_probability as tfp
-from tensorflow_probability import distributions as dist
 
+# Local imports
 import config
-from data import getDataset
+from data import get_dataset, get_mixed_dataset
+from model import get_model
 
 # CALLBACK FUNCTION
 # =============================================================================
 
-class print_callback(tf.keras.callbacks.Callback):
+class PrintCallback(tf.keras.callbacks.Callback):
     
     def __init__(self, print_epoch=1000, losses_avg_no=100):
         self.print_epoch = print_epoch
@@ -48,9 +48,10 @@ class print_callback(tf.keras.callbacks.Callback):
 # MAIN
 # =============================================================================
 
-def main(argv):
+def main():
     
     # CONFIGURATIONS (extracted here as variables just for code clarity)
+    # -------------------------------------------------------------------------
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
@@ -70,15 +71,25 @@ def main(argv):
     print_epoch = config.PRINT_EPOCH
     losses = config.LOSSES_AVG_NO
     
+    # Get mix classes parameter
+    mix_classes = "-m" in sys.argv
+    
+    # FOR EVERY DATASET
+    # -------------------------------------------------------------------------
+    
     for name, dataset in datasets.items():
         
         # Extract dataset classes and features
         num_classes = dataset['num_classes']
         num_features = dataset['num_features']
+        class_a = dataset['mixed_class_A']
+        class_b = dataset['mixed_class_B']
         
         # Generate output dir
         output_dir = "{}_{}-{}model_{}train_{}ep_{}lr".format(
                         name, l1_n, l2_n, p_train, epochs, learning_rate)
+        if mix_classes:
+            output_dir += "_{}-{}mixed".format(class_a, class_b)
         output_dir = os.path.join(base_output_dir, output_dir)
         if not os.path.isdir(output_dir):
             os.makedirs(output_dir)
@@ -87,25 +98,25 @@ def main(argv):
         print("\n# {}\n##########\n".format(name))
         print("OUTPUT DIR: {}\n".format(output_dir))
         
-        # Get dataset
-        X_train, y_train, X_test, y_test = getDataset(dataset, d_path, p_train)
+        # GET DATA
+        # ---------------------------------------------------------------------
         
-        # Generate model
-        tf.keras.backend.clear_session()
+        # Get dataset
+        if mix_classes:
+            (X_train, y_train,
+             X_test, y_test) = get_mixed_dataset(dataset, d_path, p_train,
+                                                 class_a, class_b)
+        else:
+            (X_train, y_train,
+             X_test, y_test) = get_dataset(dataset, d_path, p_train)
+        
+        # TRAIN MODEL
+        # ---------------------------------------------------------------------
+        
+        # Get model
         dataset_size = len(X_train) + len(X_test)
-        kd_function = (lambda q, p, _: dist.kl_divergence(q, p) / dataset_size)
-        model = tf.keras.Sequential([
-            tf.keras.Input(shape=(num_features,), name="input"),
-            tfp.layers.DenseFlipout(l1_n, kernel_divergence_fn=kd_function,
-                                    activation=tf.nn.relu, name="dense_tfp_1"),
-            tfp.layers.DenseFlipout(l2_n, kernel_divergence_fn=kd_function,
-                                    activation=tf.nn.relu, name="dense_tfp_2"),
-            tfp.layers.DenseFlipout(num_classes,
-                                    kernel_divergence_fn=kd_function,
-                                    activation=tf.nn.softmax, name="output"),
-        ])
-        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate),
-                      loss='categorical_crossentropy', metrics=['accuracy'])
+        model = get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
+                          learning_rate)
         
         # Training
         history = model.fit(X_train,
@@ -113,7 +124,7 @@ def main(argv):
                             epochs=epochs, 
                             verbose=0, 
                             use_multiprocessing=True, 
-                            callbacks=[print_callback(print_epoch, losses)],
+                            callbacks=[PrintCallback(print_epoch, losses)],
                             validation_split=0.1,
                             validation_freq=25)
         
@@ -121,5 +132,5 @@ def main(argv):
         model.save(output_dir)
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
 

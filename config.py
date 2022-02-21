@@ -9,6 +9,8 @@ DATA_PATH = "./Data"
 LOG_DIR = "./Models"
 
 # Image files
+#     The noise step and stop values are empirically selected for better
+#     visualisation. For other datasets it will be necessary to adjust them.
 url_base = "http://www.ehu.es/ccwintco/uploads"
 DATASETS = {
     "BO": {
@@ -20,6 +22,8 @@ DATASETS = {
         'url_gt': url_base + "/5/58/Botswana_gt.mat",
         'num_classes': 14,
         'num_features': 145,
+        'noise_stop': 0.13,
+        'noise_step': 0.01,
         'mixed_class_A': 4,
         'mixed_class_B': 5
     },
@@ -32,6 +36,8 @@ DATASETS = {
         'url_gt': url_base + "/c/c4/Indian_pines_gt.mat",
         'num_classes': 16,
         'num_features': 200,
+        'noise_stop': 0.13,
+        'noise_step': 0.01,
         'mixed_class_A': 2,
         'mixed_class_B': 5
     },
@@ -44,6 +50,8 @@ DATASETS = {
         'url_gt': url_base + "/a/a6/KSC_gt.mat",
         'num_classes': 13,
         'num_features': 176,
+        'noise_stop': 0.13,
+        'noise_step': 0.01,
         'mixed_class_A': 8,
         'mixed_class_B': 11
     },
@@ -56,6 +64,8 @@ DATASETS = {
         'url_gt': url_base + "/5/50/PaviaU_gt.mat",
         'num_classes': 9,
         'num_features': 103,
+        'noise_stop': 0.62,
+        'noise_step': 0.02,
         'mixed_class_A': 3,
         'mixed_class_B': 7
     },
@@ -68,6 +78,8 @@ DATASETS = {
         'url_gt': url_base + "/f/fa/Salinas_gt.mat",
         'num_classes': 16,
         'num_features': 204,
+        'noise_stop': 0.13,
+        'noise_step': 0.01,
         'mixed_class_A': 1,
         'mixed_class_B': 6
     }
