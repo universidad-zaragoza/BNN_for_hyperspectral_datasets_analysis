@@ -224,10 +224,8 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colors):
 def plot_mixed_uncertainty(output_dir, name, data, class_a, class_b, w, h,
                            colors):
     
-    data = [[0.0153, 0.0156, 0.1968], [0.7063, 0.6919, 0.2388]]
-    
     # Xticks
-    xticks = np.arange(len(data[name][0]))
+    xticks = np.arange(len(data[0]))
     xticks_0 = xticks - 0.21
     xticks_1 = xticks + 0.21
     
@@ -235,10 +233,10 @@ def plot_mixed_uncertainty(output_dir, name, data, class_a, class_b, w, h,
     fig, ax = plt.subplots(figsize=(w, h))
     
     # Plots
-    ax.bar(xticks_0, data[name][0], label="Ep", color=colors["BO"],
-           width=0.35, zorder=3)
-    ax.bar(xticks_1, data[name][1], label="Ep mixed", color=colors["SV"],
-           width=0.35, zorder=3)
+    ax.bar(xticks_0, data[0], label="Ep", color=colors["BO"], width=0.35,
+           zorder=3)
+    ax.bar(xticks_1, data[1], label="Ep mixed", color=colors["SV"], width=0.35,
+           zorder=3)
     
     # Axes label
     ax.set_xlabel("{} mixed classes".format(name))

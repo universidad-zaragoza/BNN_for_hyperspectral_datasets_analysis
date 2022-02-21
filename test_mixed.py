@@ -6,40 +6,23 @@ import tensorflow as tf
 
 # Local imports
 import config
-from data import get_dataset, get_noisy_dataset
+from data import get_dataset, get_mixed_dataset
 from model import get_model
-from analysis import *
-from plot import (plot_class_uncertainty, plot_uncertainty_with_noise,
-                  plot_reliability_diagram, plot_accuracy_vs_uncertainty)
+from analysis import bayesian_predictions, analyse_entropy
+from plot import plot_mixed_uncertainty
 
 # PREDICT FUNCTIONS
 # =============================================================================
 
-def predict(output_dir, model, X_test, y_test, samples=100):
-    
-    # Bayesian stochastic passes
-    predictions = bayesian_predictions(model, X_test, samples=samples)
-    
-    # Reliability Diagram
-    rd_data = reliability_diagram(predictions, y_test)
-    
-    # Cross entropy and accuracy
-    acc_data, px_data = accuracy_vs_uncertainty(predictions, y_test)
-    
-    # Analyse entropy
-    _, avg_Ep, avg_H_Ep = analyse_entropy(predictions, y_test)
-    
-    return rd_data, acc_data, px_data, avg_Ep, avg_H_Ep
-
-def noise_predict(output_dir, model, X_test, y_test, samples=100):
+def predict(model, X_test, y_test, samples=100):
     
     # Bayesian stochastic passes
     predictions = bayesian_predictions(model, X_test, samples=samples)
     
     # Analyse entropy
-    avg_H, _, _ = analyse_entropy(predictions, y_test)
+    _, avg_Ep, _ = analyse_entropy(predictions, y_test)
     
-    return avg_H
+    return avg_Ep
 
 # MAIN
 # =============================================================================
@@ -84,15 +67,19 @@ def main():
         # Extract dataset classes and features
         num_classes = dataset['num_classes']
         num_features = dataset['num_features']
+        class_a = dataset['mixed_class_A']
+        class_b = dataset['mixed_class_B']
         
-        # Get output dir
+        # Get output dir and mixed output dir
         output_dir = "{}_{}-{}model_{}train_{}ep_{}lr".format(
                         name, l1_n, l2_n, p_train, epochs, learning_rate)
+        mixed_output_dir = output_dir + "_{}-{}mixed".format(class_a, class_b)
         output_dir = os.path.join(base_dir, output_dir)
+        mixed_output_dir = os.path.join(base_dir, mixed_output_dir)
         
         # Print dataset name and output dir
         print("\n# {}\n##########\n".format(name))
-        print("OUTPUT DIR: {}\n".format(output_dir))
+        print("OUTPUT DIR: {}\n".format(mixed_output_dir))
         
         # GET DATA
         # ---------------------------------------------------------------------
@@ -100,12 +87,12 @@ def main():
         # Get dataset
         X_train, _, X_test, y_test = get_dataset(dataset, d_path, p_train)
         
-        # Get noisy datasets
-        noises = np.arange(0.0, dataset['noise_stop'], dataset['noise_step'])
-        _, _, n_X_tests, n_y_test = get_noisy_dataset(dataset, d_path, p_train,
-                                                      noises)
+        # Get mixed dataset
+        (m_X_train, _,
+         m_X_test, m_y_test) = get_mixed_dataset(dataset, d_path, p_train,
+                                                class_a, class_b)
         
-        # LOAD MODEL
+        # LOAD MODELS
         # ---------------------------------------------------------------------
         
         # Get model
@@ -116,42 +103,30 @@ def main():
         # Load model parameters
         model = tf.keras.models.load_model(output_dir)
         
+        # Get mixed model
+        mixed_model = get_model(dataset_size, num_features, num_classes, l1_n,
+                                l2_n, learning_rate)
+        
+        # Load mixed model parameters
+        mixed_model = tf.keras.models.load_model(mixed_output_dir)
+        
         # LAUNCH PREDICTIONS
         # ---------------------------------------------------------------------
         
         # Launch predictions
-        (reliability_data[name],
-         acc_data[name],
-         px_data[name],
-         avg_Ep, avg_H_Ep) = predict(output_dir, model, X_test, y_test,
-                                     samples=passes)
+        avg_Ep = predict(model, X_test, y_test, samples=passes)
         
-        # Launch predictions for every noisy dataset
-        noise_data = [[] for i in range(num_classes + 1)]
-        for n_X_test in n_X_tests:
-            avg_H = noise_predict(output_dir, model, n_X_test, n_y_test,
-                                 samples=passes)
-            noise_data = np.append(noise_data, avg_H[np.newaxis].T, 1)
+        # Launch mixed predictions
+        m_avg_Ep = predict(mixed_model, m_X_test, m_y_test, samples=passes)
         
         # IMAGE-RELATED PLOTS
         # ---------------------------------------------------------------------
         
         # Plot class uncertainty
-        plot_class_uncertainty(output_dir, name, avg_Ep, avg_H_Ep, w, h,
-                               colors)
-        
-        # Plot uncertainty with noise
-        plot_uncertainty_with_noise(output_dir, name, noises, noise_data, w, h,
-                                    colors)
-    
-    # GROUPED PLOTS
-    # -------------------------------------------------------------------------
-    
-    # Plot reliability diagram
-    plot_reliability_diagram(base_dir, reliability_data, w, h, colors)
-    
-    # Plot accuracy vs uncertainty
-    plot_accuracy_vs_uncertainty(base_dir, acc_data, px_data, w, h, colors)
+        data = [[avg_Ep[class_a], avg_Ep[class_b], avg_Ep[-1]],
+                [m_avg_Ep[class_a], m_avg_Ep[class_b], m_avg_Ep[-1]]]
+        plot_mixed_uncertainty(mixed_output_dir, name, data, class_a, class_b,
+                               w, h, colors)
 
 if __name__ == "__main__":
     main()
