@@ -90,7 +90,7 @@ def main():
         # Get mixed dataset
         (m_X_train, _,
          m_X_test, m_y_test) = get_mixed_dataset(dataset, d_path, p_train,
-                                                class_a, class_b)
+                                                 class_a, class_b)
         
         # LOAD MODELS
         # ---------------------------------------------------------------------

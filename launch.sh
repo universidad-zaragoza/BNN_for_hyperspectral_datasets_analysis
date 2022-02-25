@@ -8,3 +8,6 @@
 # Test
 ./test.py 2>\dev\null | tee Logs/test_log.txt
 
+# Mixed classes test
+./test_mixed.py 2>\dev\null | tee Logs/mixed_test_log.txt
+

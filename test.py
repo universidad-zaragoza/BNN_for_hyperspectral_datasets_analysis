@@ -15,7 +15,7 @@ from plot import (plot_class_uncertainty, plot_uncertainty_with_noise,
 # PREDICT FUNCTIONS
 # =============================================================================
 
-def predict(output_dir, model, X_test, y_test, samples=100):
+def predict(model, X_test, y_test, samples=100):
     
     # Bayesian stochastic passes
     predictions = bayesian_predictions(model, X_test, samples=samples)
@@ -31,7 +31,7 @@ def predict(output_dir, model, X_test, y_test, samples=100):
     
     return rd_data, acc_data, px_data, avg_Ep, avg_H_Ep
 
-def noise_predict(output_dir, model, X_test, y_test, samples=100):
+def noise_predict(model, X_test, y_test, samples=100):
     
     # Bayesian stochastic passes
     predictions = bayesian_predictions(model, X_test, samples=samples)
@@ -123,14 +123,12 @@ def main():
         (reliability_data[name],
          acc_data[name],
          px_data[name],
-         avg_Ep, avg_H_Ep) = predict(output_dir, model, X_test, y_test,
-                                     samples=passes)
+         avg_Ep, avg_H_Ep) = predict(model, X_test, y_test, samples=passes)
         
         # Launch predictions for every noisy dataset
         noise_data = [[] for i in range(num_classes + 1)]
         for n_X_test in n_X_tests:
-            avg_H = noise_predict(output_dir, model, n_X_test, n_y_test,
-                                 samples=passes)
+            avg_H = noise_predict(model, n_X_test, n_y_test, samples=passes)
             noise_data = np.append(noise_data, avg_H[np.newaxis].T, 1)
         
         # IMAGE-RELATED PLOTS

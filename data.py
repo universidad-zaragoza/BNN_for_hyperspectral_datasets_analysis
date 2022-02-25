@@ -133,18 +133,19 @@ def get_noisy_dataset(dataset, data_path, p_train, noises, seed=35):
      y_train, y_test) = train_test_split(X, y, test_size=p_test,
                                          random_state=seed, stratify=y)
     
-    noisy_X_test = []
+    noisy_X_tests = []
     for noise in noises:
         
         # Add noise to X_test
-        noisy_X_test.append(X_test + _generic_noise(X_test, noise))
+        noisy_X_tests.append(X_test + _generic_noise(X_test, noise))
     
-    # Standardise both, X_train and X_test
+    # Standardise X_train and each noisy_X_tests
     X_train = (X_train - X_mean) / X_std
-    X_test = (X_test - X_mean) / X_std
+    for n, X_test in enumerate(noisy_X_tests):
+        noisy_X_tests[n] = (X_test - X_mean) / X_std
     
     # Return train and test sets
-    return X_train, y_train, noisy_X_test, y_test
+    return X_train, y_train, noisy_X_tests, y_test
 
 # MIXED DATASET FUNCTIONS
 # =============================================================================
