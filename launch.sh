@@ -6,8 +6,11 @@
 ./train.py -m 2>\dev\null | tee Logs/mixed_train_log.txt
 
 # Test
-./test.py 2>\dev\null | tee Logs/test_log.txt
+./test.py 2>\dev\null
+
+# Noise test
+./test_noise.py 2>\dev\null
 
 # Mixed classes test
-./test_mixed.py 2>\dev\null | tee Logs/mixed_test_log.txt
+./test_mixed.py 2>\dev\null
 

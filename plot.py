@@ -187,11 +187,11 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colors):
     
     # Plots
     for n, d in enumerate(data[:-3]):
-        ax.plot(xticks, d, color=colors["BO"])
-    ax.plot(xticks, data[-3], color=colors["BO"], label="classes")
-    ax.plot(xticks, data[-2], color=colors["IP"], label="avg",
+        ax.plot(labels, d, color=colors["BO"])
+    ax.plot(labels, data[-3], color=colors["BO"], label="classes")
+    ax.plot(labels, data[-2], color=colors["IP"], label="avg",
             linestyle='dashed')
-    ax.plot(xticks, data[-1], color=colors["KSC"], label="max",
+    ax.plot(labels, data[-1], color=colors["KSC"], label="max",
             linestyle='dashed')
     
     # Axes label
