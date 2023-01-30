@@ -3,14 +3,51 @@
 import os
 import numpy as np
 import tensorflow as tf
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-import config
-from data import get_dataset
-from model import get_model
-from analysis import *
-from plot import (plot_class_uncertainty, plot_reliability_diagram,
-                  plot_accuracy_vs_uncertainty)
+from lib import config
+from lib.data import get_dataset
+from lib.model import get_model
+from lib.analysis import *
+from lib.plot import (plot_class_uncertainty, plot_reliability_diagram,
+                      plot_accuracy_vs_uncertainty)
+
+# PARAMETERS
+# =============================================================================
+
+def parse_args():
+    """Analyses the received parameters and returns them organised.
+    
+    Takes the list of strings received at sys.argv and generates a
+    namespace asigning them to objects.
+    
+    Returns
+    -------
+    out: namespace
+        The namespace with the values of the received parameters asigned
+        to objects.
+    
+    """
+    # Generate the parameter analyser
+    parser = ArgumentParser(description = __doc__,
+                            formatter_class = RawDescriptionHelpFormatter)
+    
+    # Add arguments
+    parser.add_argument("epochs",
+                        type=int,
+                        nargs=5,
+                        help=("List of trained epochs. The order must be: BO, "
+                              "IP, KSC, PU and SV."))
+    parser.add_argument('-e', '--epoch',
+                        type=int,
+                        nargs=5,
+                        help=("List of Selected epoch for testing. The order "
+                              "must be: BO, IP, KSC, PU and SV. By default "
+                              "uses `epochs` value."))
+    
+    # Return the analysed parameters
+    return parser.parse_args()
 
 # PREDICT FUNCTIONS
 # =============================================================================
@@ -34,15 +71,18 @@ def predict(model, X_test, y_test, samples=100):
 # MAIN
 # =============================================================================
 
-def main():
+def main(epochs, epoch):
     
-    # CONFIGURATION MACROS (extracted here as variables just for code clarity)
+    # CONFIGURATION (extracted here as variables just for code clarity)
     # -------------------------------------------------------------------------
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
     base_dir = config.LOG_DIR
     datasets = config.DATASETS
+    output_dir = "Test"
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
     
     # Model parameters
     l1_n = config.LAYER1_NEURONS
@@ -50,7 +90,6 @@ def main():
     
     # Training parameters
     p_train = config.P_TRAIN
-    epochs = config.NUM_EPOCHS
     learning_rate = config.LEARNING_RATE
     
     # Bayesian passes
@@ -61,7 +100,7 @@ def main():
     w = config.PLOT_W
     h = config.PLOT_H
     
-    # PLOTTING VARIABLES
+    # Plotting variables
     reliability_data = {}
     acc_data = {}
     px_data = {}
@@ -75,14 +114,20 @@ def main():
         num_classes = dataset['num_classes']
         num_features = dataset['num_features']
         
-        # Get output dir
-        output_dir = "{}_{}-{}model_{}train_{}ep_{}lr".format(
-                        name, l1_n, l2_n, p_train, epochs, learning_rate)
-        output_dir = os.path.join(base_dir, output_dir)
+        # Get model dir
+        model_dir = "{}_{}-{}model_{}train_{}ep_{}lr/epoch_{}".format(
+                        name, l1_n, l2_n, p_train, epochs[name], learning_rate,
+                        epoch[name])
+        model_dir = os.path.join(base_dir, model_dir)
+        if not os.path.isdir(model_dir):
+            reliability_data[name] = []
+            acc_data[name] = []
+            px_data[name] = []
+            continue
         
-        # Print dataset name and output dir
+        # Print dataset name and model dir
         print("\n# {}\n##########\n".format(name))
-        print("OUTPUT DIR: {}\n".format(output_dir))
+        print("MODEL DIR: {}\n".format(model_dir))
         
         # GET DATA
         # ---------------------------------------------------------------------
@@ -93,13 +138,8 @@ def main():
         # LOAD MODEL
         # ---------------------------------------------------------------------
         
-        # Get model
-        dataset_size = len(X_train) + len(X_test)
-        model = get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
-                          learning_rate)
-        
-        # Load model parameters
-        model = tf.keras.models.load_model(output_dir)
+        # Load model
+        model = tf.keras.models.load_model(model_dir)
         
         # LAUNCH PREDICTIONS
         # ---------------------------------------------------------------------
@@ -110,22 +150,33 @@ def main():
          px_data[name],
          avg_Ep, avg_H_Ep) = predict(model, X_test, y_test, samples=passes)
         
+        # Liberate model
+        del model
+        
         # IMAGE-RELATED PLOTS
         # ---------------------------------------------------------------------
         
         # Plot class uncertainty
-        plot_class_uncertainty(output_dir, name, avg_Ep, avg_H_Ep, w, h,
-                               colors)
+        plot_class_uncertainty(output_dir, name, epoch[name], avg_Ep, avg_H_Ep,
+                               w, h, colors)
     
     # GROUPED PLOTS
     # -------------------------------------------------------------------------
     
     # Plot reliability diagram
-    plot_reliability_diagram(base_dir, reliability_data, w, h, colors)
+    plot_reliability_diagram(output_dir, reliability_data, w, h, colors)
     
     # Plot accuracy vs uncertainty
-    plot_accuracy_vs_uncertainty(base_dir, acc_data, px_data, w, h, colors)
+    plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colors)
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    if args.epoch is None:
+        args.epoch = args.epochs
+    epochs = {}
+    epoch = {}
+    for i, name in enumerate(["BO", "IP", "KSC", "PU", "SV"]):
+        epochs[name] = args.epochs[i]
+        epoch[name] = args.epoch[i]
+    main(epochs, epoch)
 

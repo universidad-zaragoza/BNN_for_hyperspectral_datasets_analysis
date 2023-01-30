@@ -3,13 +3,50 @@
 import os
 import numpy as np
 import tensorflow as tf
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-import config
-from data import get_dataset, get_mixed_dataset
-from model import get_model
-from analysis import bayesian_predictions, analyse_entropy
-from plot import plot_mixed_uncertainty
+from lib import config
+from lib.data import get_dataset, get_mixed_dataset
+from lib.model import get_model
+from lib.analysis import bayesian_predictions, analyse_entropy
+from lib.plot import plot_mixed_uncertainty
+
+# PARAMETERS
+# =============================================================================
+
+def parse_args():
+    """Analyses the received parameters and returns them organised.
+    
+    Takes the list of strings received at sys.argv and generates a
+    namespace asigning them to objects.
+    
+    Returns
+    -------
+    out: namespace
+        The namespace with the values of the received parameters asigned
+        to objects.
+    
+    """
+    # Generate the parameter analyser
+    parser = ArgumentParser(description = __doc__,
+                            formatter_class = RawDescriptionHelpFormatter)
+    
+    # Add arguments
+    parser.add_argument("epochs",
+                        type=int,
+                        nargs=5,
+                        help=("List of trained epochs. The order must be: BO, "
+                              "IP, KSC, PU and SV."))
+    parser.add_argument('-e', '--epoch',
+                        type=int,
+                        nargs=5,
+                        help=("List of Selected epoch for testing. The order "
+                              "must be: BO, IP, KSC, PU and SV. By default "
+                              "uses `epochs` value."))
+    
+    # Return the analysed parameters
+    return parser.parse_args()
 
 # PREDICT FUNCTIONS
 # =============================================================================
@@ -27,15 +64,18 @@ def predict(model, X_test, y_test, samples=100):
 # MAIN
 # =============================================================================
 
-def main():
+def main(epochs, epoch):
     
-    # CONFIGURATION MACROS (extracted here as variables just for code clarity)
+    # CONFIGURATION (extracted here as variables just for code clarity)
     # -------------------------------------------------------------------------
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
     base_dir = config.LOG_DIR
     datasets = config.DATASETS
+    output_dir = "Test"
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
     
     # Model parameters
     l1_n = config.LAYER1_NEURONS
@@ -43,7 +83,6 @@ def main():
     
     # Training parameters
     p_train = config.P_TRAIN
-    epochs = config.NUM_EPOCHS
     learning_rate = config.LEARNING_RATE
     
     # Bayesian passes
@@ -54,10 +93,12 @@ def main():
     w = config.PLOT_W
     h = config.PLOT_H
     
-    # PLOTTING VARIABLES
-    reliability_data = {}
-    acc_data = {}
-    px_data = {}
+    # Table variables
+    table = "           First class      Second class    All classes avg.\n"
+    table += "         --------------    --------------    --------------\n"
+    table += "Image    Ep    Ep mixed    Ep    Ep mixed    EP    EP mixed\n"
+    base_str = "{:>5}{:>7.2f}{:>9.2f}{:>9.2f}{:>9.2f}{:>9.2f}{:>9.2f}\n"
+    print(table, end='')
     
     # FOR EVERY DATASET
     # -------------------------------------------------------------------------
@@ -70,16 +111,17 @@ def main():
         class_a = dataset['mixed_class_A']
         class_b = dataset['mixed_class_B']
         
-        # Get output dir and mixed output dir
-        output_dir = "{}_{}-{}model_{}train_{}ep_{}lr".format(
-                        name, l1_n, l2_n, p_train, epochs, learning_rate)
-        mixed_output_dir = output_dir + "_{}-{}mixed".format(class_a, class_b)
-        output_dir = os.path.join(base_dir, output_dir)
-        mixed_output_dir = os.path.join(base_dir, mixed_output_dir)
-        
-        # Print dataset name and output dir
-        print("\n# {}\n##########\n".format(name))
-        print("OUTPUT DIR: {}\n".format(mixed_output_dir))
+        # Get model dir and mixed model dir
+        base_model_dir = "{}_{}-{}model_{}train_{}ep_{}lr".format(
+                            name, l1_n, l2_n, p_train, epochs[name],
+                            learning_rate)
+        model_dir = base_model_dir + "/epoch_{}".format(epoch[name])
+        model_dir = os.path.join(base_dir, model_dir)
+        mixed_model_dir = base_model_dir + "_{}-{}mixed/epoch_{}".format(
+                                            class_a, class_b, epoch[name])
+        mixed_model_dir = os.path.join(base_dir, mixed_model_dir)
+        if not os.path.isdir(model_dir) or not os.path.isdir(mixed_model_dir):
+            continue
         
         # GET DATA
         # ---------------------------------------------------------------------
@@ -95,20 +137,11 @@ def main():
         # LOAD MODELS
         # ---------------------------------------------------------------------
         
-        # Get model
-        dataset_size = len(X_train) + len(X_test)
-        model = get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
-                          learning_rate)
+        # Load model
+        model = tf.keras.models.load_model(model_dir)
         
-        # Load model parameters
-        model = tf.keras.models.load_model(output_dir)
-        
-        # Get mixed model
-        mixed_model = get_model(dataset_size, num_features, num_classes, l1_n,
-                                l2_n, learning_rate)
-        
-        # Load mixed model parameters
-        mixed_model = tf.keras.models.load_model(mixed_output_dir)
+        # Load mixed model
+        mixed_model = tf.keras.models.load_model(mixed_model_dir)
         
         # LAUNCH PREDICTIONS
         # ---------------------------------------------------------------------
@@ -122,12 +155,32 @@ def main():
         # IMAGE-RELATED PLOTS
         # ---------------------------------------------------------------------
         
+        # Save table values
+        output_str = base_str.format(name, avg_Ep[class_a], m_avg_Ep[class_a],
+                                     avg_Ep[class_b], m_avg_Ep[class_b],
+                                     avg_Ep[-1], m_avg_Ep[-1])
+        print(output_str, end='')
+        table += output_str
+        
         # Plot class uncertainty
         data = [[avg_Ep[class_a], avg_Ep[class_b], avg_Ep[-1]],
                 [m_avg_Ep[class_a], m_avg_Ep[class_b], m_avg_Ep[-1]]]
-        plot_mixed_uncertainty(mixed_output_dir, name, data, class_a, class_b,
-                               w, h, colors)
+        plot_mixed_uncertainty(output_dir, name, epoch[name], data, class_a,
+                               class_b, w, h, colors)
+    
+    # Save table
+    output_file = os.path.join(output_dir, "mixed_classes.txt")
+    with open(output_file, 'w') as f:
+        print(table, file=f)
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    if args.epoch is None:
+        args.epoch = args.epochs
+    epochs = {}
+    epoch = {}
+    for i, name in enumerate(["BO", "IP", "KSC", "PU", "SV"]):
+        epochs[name] = args.epochs[i]
+        epoch[name] = args.epoch[i]
+    main(epochs, epoch)
 
