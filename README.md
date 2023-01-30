@@ -6,14 +6,14 @@ This is the code of the paper "Bayesian Neural Networks to Analyze Hyperspectral
 
 A. Alcolea and J. Resano, "Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics", in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-10, 2022, doi: 10.1109/TGRS.2022.3205119.
 
-@article{alcolea2022bayesian,
-author = {Alcolea, Adrián and Resano, Javier},
-journal = {IEEE Transactions on Geoscience and Remote Sensing}, 
-title = {Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics}, 
-year = {2022},
-volume = {60},
-pages = {1-10},
-doi = {10.1109/TGRS.2022.3205119}
+@article{alcolea2022bayesian,  
+author = {Alcolea, Adrián and Resano, Javier},  
+journal = {IEEE Transactions on Geoscience and Remote Sensing},  
+title = {Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics},  
+year = {2022},  
+volume = {60},  
+pages = {1-10},  
+doi = {10.1109/TGRS.2022.3205119}  
 }
 
 ## Train
