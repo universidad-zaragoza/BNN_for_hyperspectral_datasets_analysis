@@ -186,12 +186,17 @@ def main(name, epochs, epoch, legend):
     # PREPARE FIGURE
     # -------------------------------------------------------------------------
     
-    fig = plt.figure(frameon=False)
-    dpi = 96
-    fig.set_size_inches(shape[1]/dpi, shape[0]/dpi)
-    ax = plt.Axes(fig, [0., 0., 1., 1.])
-    ax.set_axis_off()
-    fig.add_axes(ax)
+    if name in ["IP", "KSC"]:
+        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+        fig.set_size_inches(2*shape[1]/96, 2*shape[0]/96)
+    else:
+        fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4)
+        fig.set_size_inches(4*shape[1]/96, shape[0]/96)
+    
+    ax1.set_axis_off()
+    ax2.set_axis_off()
+    ax3.set_axis_off()
+    ax4.set_axis_off()
     
     # RGB IMAGE GENERATION
     # Using HSI2RGB algorithm from paper:
@@ -210,37 +215,19 @@ def main(name, epochs, epoch, legend):
     
     # Create RGB image (D65 illuminant and 0.002 threshold)
     RGB_img = HSI2RGB(wl, img, shape[0], shape[1], 65, 0.002)
-    
-    # Generate and save image
-    file = "{}_RGB.pdf".format(name)
-    ax.imshow(RGB_img)
-    plt.savefig(os.path.join(output_dir, file), bbox_inches='tight')
+    ax1.imshow(RGB_img)
     
     # GROUND TRUTH GENERATION
     # -------------------------------------------------------------------------
     
     gt = map_to_img(y, shape, [(0, 0, 0)] + colors_int_rgb[:num_classes])
-    file = "{}_gt.pdf".format(name)
-    ax.imshow(gt)
-    handles = [mpatches.Patch(color=colors_rgb[i], label="class {}".format(i))
-               for i in range(num_classes)]
-    if legend:
-        plt.legend(handles=handles, title="Classes", loc="upper left",
-                   bbox_to_anchor=(1, 1))
-    plt.savefig(os.path.join(output_dir, file), bbox_inches='tight')
+    ax2.imshow(gt)
     
     # PREDICTION MAP GENERATION
     # -------------------------------------------------------------------------
     
     pred_H_img = map_to_img(pred_map, shape, colors_int_rgb[:num_classes])
-    file = "{}_{}_pred_map.pdf".format(name, epoch)
-    ax.imshow(pred_H_img)
-    handles = [mpatches.Patch(color=colors_rgb[i], label="class {}".format(i))
-               for i in range(num_classes)]
-    if legend:
-        plt.legend(handles=handles, title="Classes", loc="upper left",
-                   bbox_to_anchor=(1, 1))
-    plt.savefig(os.path.join(output_dir, file), bbox_inches='tight')
+    ax3.imshow(pred_H_img)
     
     # UNCERTAINTY MAP GENERATION
     # -------------------------------------------------------------------------
@@ -249,13 +236,13 @@ def main(name, epochs, epoch, legend):
     u_map, labels = uncertainty_to_map(H_map, num_classes, slots=slots,
                                        max_H=1.5)
     H_img = map_to_img(u_map, shape, gradients_int_rgb[:slots])
-    file = "{}_{}_H_map.pdf".format(name, epoch)
-    ax.imshow(H_img)
-    handles = [mpatches.Patch(color=gradients_rgb[i], label=labels[i])
-               for i in range(slots)]
-    if legend:
-        plt.legend(handles=handles, title="Uncertainty", loc="upper left",
-                   bbox_to_anchor=(1, 1))
+    ax4.imshow(H_img)
+    
+    # PLOT IMAGE
+    # -------------------------------------------------------------------------
+    
+    plt.tight_layout(pad=0.5, w_pad=1.0, h_pad=1.0)
+    file = "H_{}.pdf".format(name)
     plt.savefig(os.path.join(output_dir, file), bbox_inches='tight')
 
 if __name__ == "__main__":
