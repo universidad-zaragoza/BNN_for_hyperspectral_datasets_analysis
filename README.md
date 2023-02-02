@@ -16,7 +16,7 @@ pages = {1-10},
 doi = {10.1109/TGRS.2022.3205119}  
 }
 
-## Exeution
+## Execution
 
 ### With the 'sh' script in linux
 
