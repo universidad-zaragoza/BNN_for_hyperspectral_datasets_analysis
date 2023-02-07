@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+"""Data module of the BNN4HI package
+
+The functions of this module are used to load, preprocess and organise
+data from hyperspectral datasets.
+"""
+
+__version__ = "1.0.0"
+__author__ = "Adrián Alcolea"
+__email__ = "alcolea@unizar.es"
+__maintainer__ = "Adrián Alcolea"
+__license__ = "GPLv3"
+__credits__ = ["Adrián Alcolea", "Javier Resano"]
+
 import os
 import numpy as np
 from scipy import io
@@ -10,7 +24,7 @@ from sklearn.model_selection import train_test_split
 # =============================================================================
 
 def _load_image(image_info, data_path):
-    """Loads the image and the ground truth from a `mat` file.
+    """Loads the image and the ground truth from a `mat` file
     
     If the file is not present in the `data_path` directory, downloads
     the file from the `image_info` url.
@@ -18,16 +32,17 @@ def _load_image(image_info, data_path):
     Parameters
     ----------
     image_info: dict
-        Dict structure with information of the image. Described below.
+        Dict structure with information of the image. Described in the
+        config module of BNN4HI package.
     data_path: String
         Absolute path of the hyperspectral images directory.
     
     Returns
     -------
-    out: NumPy array, NumPy array
+    NumPy array, NumPy array
         The image and the ground truth data.
-    
     """
+    
     # Image name
     image_name = image_info['key']
     
@@ -70,21 +85,65 @@ def _load_image(image_info, data_path):
     return X, y
 
 def _standardise(X):
+    """Standardises a set of hyperspectral pixels
+    
+    Parameters
+    ----------
+    X: NumPy array
+        Set of hyperspectral pixels.
+    
+    Returns
+    -------
+    NumPy array
+        The received set of pixels standardised.
+    """
+    
     return (X - X.mean(axis=0)) / X.std(axis=0)
 
 def _normalise(X):
+    """Normalises a set of hyperspectral pixels
+    
+    Parameters
+    ----------
+    X: NumPy array
+        Set of hyperspectral pixels.
+    
+    Returns
+    -------
+    NumPy array
+        The received set of pixels normalised.
+    """
+    
     X -= X.min()
     return X / X.max()
 
-def _preprocess(X, y, standardisation=False, only_labeled=True):
+def _preprocess(X, y, standardisation=False, only_labelled=True):
+    """Preprocesses the hyperspectral image and ground truth data
+    
+    Parameters
+    ----------
+    X: NumPy array
+        Hyperspectral image.
+    y: NumPy array
+        Ground truth of `X`.
+    standardistion: bool
+        Flag to activate standardisation.
+    only_labelled: bool
+        Flag to remove unlabelled pixels.
+    
+    Returns
+    -------
+    NumPy array, NumPy array
+        Preprocessed data of the hyperspectral image and ground truth.
+    """
     
     # Reshape them to ignore spatiality
     X = X.reshape(-1, X.shape[2])
     y = y.reshape(-1)
     
-    if only_labeled:
+    if only_labelled:
         
-        # Keep only labeled pixels
+        # Keep only labelled pixels
         X = X[y > 0, :]
         y = y[y > 0]
         
@@ -92,9 +151,11 @@ def _preprocess(X, y, standardisation=False, only_labeled=True):
         for new_class_num, old_class_num in enumerate(np.unique(y)):
             y[y == old_class_num] = new_class_num
         
+        # Regular standardisation
         if standardisation:
             X = _standardise(X)
     
+    # Standardise only using labelled pixels for `mean` and `std`
     elif standardisation:
         m = X[y > 0, :].mean(axis=0)
         s = X[y > 0, :].std(axis=0)
@@ -197,7 +258,7 @@ def get_map(dataset, data_path):
     shape = y.shape
     
     # Preprocess
-    X, y = _preprocess(X, y, standardisation=True, only_labeled=False)
+    X, y = _preprocess(X, y, standardisation=True, only_labelled=False)
     
     return X, y, shape
 
@@ -221,7 +282,7 @@ def get_image(dataset, data_path):
     shape = X.shape
     
     # Preprocess
-    X, _ = _preprocess(X, y, standardisation=False, only_labeled=False)
+    X, _ = _preprocess(X, y, standardisation=False, only_labelled=False)
     
     # Normalise
     X = _normalise(X)

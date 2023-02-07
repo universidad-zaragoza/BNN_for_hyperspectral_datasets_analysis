@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+"""Model module of the BNN4HI package
+
+This module defines the bayesian model used to train.
+"""
+
+__version__ = "1.0.0"
+__author__ = "Adrián Alcolea"
+__email__ = "alcolea@unizar.es"
+__maintainer__ = "Adrián Alcolea"
+__license__ = "GPLv3"
+__credits__ = ["Adrián Alcolea", "Javier Resano"]
+
 import os
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -10,6 +23,28 @@ from tensorflow_probability import distributions as dist
 
 def get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
               learning_rate):
+    """Preprocess
+    
+    Parameters
+    ----------
+    dataset_size: int
+        Number of pixels of the dataset.
+    num_features: int
+        Number of features of each pixel.
+    num_classes: int
+        Number of classes of the dataset.
+    l1_n: int
+        Number of neurons of the first hidden layer.
+    l2_n: int
+        Number of neurons of the second hidden layer
+    learning_rate: float
+        Initial learning rate.
+    
+    Returns
+    -------
+    TensorFlow Keras Sequential
+        Bayesian model ready to receive and train hyperspectral data.
+    """
     
     # Generate and compile model
     tf.keras.backend.clear_session()
@@ -28,4 +63,3 @@ def get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
                   loss='categorical_crossentropy', metrics=['accuracy'])
     
     return model
-

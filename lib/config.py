@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+"""Config module of the BNN4HI package
+
+This module provides macros with data information, training and testing
+parameters and plotting configurations.
+"""
+
+__version__ = "1.0.0"
+__author__ = "Adrián Alcolea"
+__email__ = "alcolea@unizar.es"
+__maintainer__ = "Adrián Alcolea"
+__license__ = "GPLv3"
+__credits__ = ["Adrián Alcolea", "Javier Resano"]
+
 import numpy as np
 
 # CONFIGURATION GLOBALS
@@ -16,10 +30,14 @@ import numpy as np
 DATA_PATH = "./Data"
 LOG_DIR = "./Models"
 
+# DATA INFORMATION
+# =============================================================================
+
 # Image files
-#     The noise step and stop values are empirically selected for better
-#     visualisation. For other datasets it will be necessary to adjust them.
-#     The wavelengths have been selected according to the sensor and the
+#     Noise step and stop values are empirically selected for better
+#     visualisation. For other datasets it will be necessary to adjust
+#     them.
+#     Wavelengths have been selected according to the sensor and the
 #     characteristics of each image for a better RGB representation.
 url_base = "http://www.ehu.es/ccwintco/uploads"
 DATASETS = {
@@ -157,6 +175,9 @@ DATASETS = {
     }
 }
 
+# TRAINING AND TESTING PARAMETERS
+# =============================================================================
+
 # Model parameters
 LAYER1_NEURONS = 32
 LAYER2_NEURONS = 16
@@ -168,14 +189,19 @@ LEARNING_RATE = 1.0e-2
 # Bayesian passes
 BAYESIAN_PASSES = 100
 
-# Plot parameters
+# PLOTTING CONFIGURATIONS
+# =============================================================================
+
+# Plots size
+PLOT_W = 7
+PLOT_H = 4
+
+# Plots colors
 COLORS = {"BO": "#2B4162",
           "IP": "#FA9F42",
           "KSC": "#0B6E4F",
           "PU": "#721817",
           "SV": "#D496A7"}
-PLOT_W = 7
-PLOT_H = 4
 
 # Maps colors
 # 99% accessibility colors (https://sashamaps.net/docs/resources/20-colors/)
@@ -223,6 +249,3 @@ GRADIENTS_INT_RGB = [
     (228, 146, 50), (228, 86, 49), (228, 48, 71), (227, 47, 130),
     (227, 46, 189), (204, 45, 227), (143, 44, 226), (81, 43, 226),
     (42, 64, 226), (41, 125, 225), (40, 185, 225), (39, 225, 202)]
-
-
-

@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+"""Analysis module of the BNN4HI package
+
+The functions of this module are used to generate and analise bayesian
+predictions.
+"""
+
+__version__ = "1.0.0"
+__author__ = "Adrián Alcolea"
+__email__ = "alcolea@unizar.es"
+__maintainer__ = "Adrián Alcolea"
+__license__ = "GPLv3"
+__credits__ = ["Adrián Alcolea", "Javier Resano"]
+
 import sys
 import math
 import numpy as np
@@ -7,8 +21,10 @@ import numpy as np
 # UNCERTAINTY FUNCTIONS
 # =============================================================================
 
-# H --> PREDICTIVE (ALEATORIC + EPISTEMIC)
 def _predictive_entropy(prediction):
+    """Calculates the predictive entropy (global uncertainty) of prediction
+    
+    """
     
     _, num_pixels, num_classes = prediction.shape
     
@@ -22,8 +38,10 @@ def _predictive_entropy(prediction):
     
     return -1 * entropy
 
-# Ep --> ALEATORIC
 def _expected_entropy(prediction):
+    """Calculates the expected entropy (aleatoric uncertainty) of prediction
+    
+    """
     
     num_tests, num_pixels, num_classes = prediction.shape
     
@@ -56,7 +74,8 @@ def reliability_diagram(predictions, y_test, num_groups=10):
     
     result = []
     for i in range(num_groups):
-        group_avg = labels[(prediction >= p_groups[i]) & (prediction < p_groups[i + 1])]
+        group_avg = labels[(prediction >= p_groups[i]) &
+                           (prediction < p_groups[i + 1])]
         result.append(group_avg.sum() / len(group_avg))
     
     return result
@@ -128,4 +147,3 @@ def bayesian_predictions(model, X_test, samples=100):
         predictions.append(prediction)
     
     return np.array(predictions)
-

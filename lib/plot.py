@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+"""Plot module of the BNN4HI package
+
+The functions of this module are used to generate plots using the
+results of the analised bayesian predictions.
+"""
+
+__version__ = "1.0.0"
+__author__ = "Adrián Alcolea"
+__email__ = "alcolea@unizar.es"
+__maintainer__ = "Adrián Alcolea"
+__license__ = "GPLv3"
+__credits__ = ["Adrián Alcolea", "Javier Resano"]
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
