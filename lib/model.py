@@ -23,7 +23,7 @@ from tensorflow_probability import distributions as dist
 
 def get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
               learning_rate):
-    """Preprocess
+    """Generates the bayesian model
     
     Parameters
     ----------
