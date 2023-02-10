@@ -108,7 +108,7 @@ def main(epochs, epoch):
     passes = config.BAYESIAN_PASSES
     
     # Plot parameters
-    colors = config.COLORS
+    colours = config.COLOURS
     w = config.PLOT_W
     h = config.PLOT_H
     
@@ -170,16 +170,16 @@ def main(epochs, epoch):
         
         # Plot class uncertainty
         plot_class_uncertainty(output_dir, name, epoch[name], avg_Ep, avg_H_Ep,
-                               w, h, colors)
+                               w, h, colours)
     
     # GROUPED PLOTS
     # -------------------------------------------------------------------------
     
     # Plot reliability diagram
-    plot_reliability_diagram(output_dir, reliability_data, w, h, colors)
+    plot_reliability_diagram(output_dir, reliability_data, w, h, colours)
     
     # Plot accuracy vs uncertainty
-    plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colors)
+    plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours)
 
 if __name__ == "__main__":
     args = parse_args()
@@ -187,8 +187,7 @@ if __name__ == "__main__":
         args.epoch = args.epochs
     epochs = {}
     epoch = {}
-    for i, name in enumerate(["BO", "IP", "KSC", "PU", "SV"]):
+    for i, name in enumerate(config.DATASETS_LIST):
         epochs[name] = args.epochs[i]
         epoch[name] = args.epoch[i]
     main(epochs, epoch)
-

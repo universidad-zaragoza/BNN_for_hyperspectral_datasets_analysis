@@ -18,7 +18,6 @@ import math
 import datetime
 import numpy as np
 import tensorflow as tf
-from matplotlib import colors
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.gridspec as grid
@@ -92,13 +91,13 @@ def uncertainty_to_map(uncertainty, num_classes, slots=10, max_H=0):
         slot +=1
     return u_map, labels
 
-def map_to_img(prediction, shape, colors, metric=None, th=0.0, bg=(0, 0, 0)):
+def map_to_img(prediction, shape, colours, metric=None, th=0.0, bg=(0, 0, 0)):
     img_shape = (shape[0], shape[1], 3)
     if metric is not None:
-        return np.reshape([colors[int(p)] if m < th else bg
+        return np.reshape([colours[int(p)] if m < th else bg
                            for p, m in zip(prediction, metric)], img_shape)
     else:
-        return np.reshape([colors[int(p)] for p in prediction], img_shape)
+        return np.reshape([colours[int(p)] for p in prediction], img_shape)
 
 def predict(model, X, samples=100):
     
@@ -135,9 +134,9 @@ def main(name, epochs, epoch, legend):
     # Bayesian passes
     passes = config.BAYESIAN_PASSES
     
-    # Maps colors
-    colors_rgb = config.COLORS_RGB
-    colors_int_rgb = config.COLORS_INT_RGB
+    # Maps colours
+    colours_rgb = config.COLOURS_RGB
+    colours_int_rgb = config.COLOURS_INT_RGB
     gradients_rgb = config.GRADIENTS_RGB
     gradients_int_rgb = config.GRADIENTS_INT_RGB
     
@@ -179,14 +178,11 @@ def main(name, epochs, epoch, legend):
     
     else:
         
-        # LOAD MODEL
-        # ---------------------------------------------------------------------
-        
         # Load model parameters
         model = tf.keras.models.load_model(model_dir)
         
         # Launch predictions
-        pred_map, H_map, _, _ = predict(model, X, samples=passes)
+        pred_map, H_map = predict(model, X, samples=passes)
         
         # Save prediction and uncertainty files
         np.save(os.path.join(model_dir, "pred_map"), pred_map)
@@ -211,14 +207,15 @@ def main(name, epochs, epoch, legend):
     ax4.set_axis_off()
     
     # RGB IMAGE GENERATION
-    # Using HSI2RGB algorithm from paper:
-    #     M. Magnusson, J. Sigurdsson, S. E. Armansson, M. O. Ulfarsson,
-    #     H. Deborah and J. R. Sveinsson, "Creating RGB Images from
-    #     Hyperspectral Images Using a Color Matching Function," IGARSS 2020 -
-    #     2020 IEEE International Geoscience and Remote Sensing Symposium,
-    #     2020, pp. 2045-2048, doi: 10.1109/IGARSS39084.2020.9323397.
-    # HSI2RGB code from:
-    #     https://github.com/JakobSig/HSI2RGB
+    #     Using HSI2RGB algorithm from paper:
+    #         M. Magnusson, J. Sigurdsson, S. E. Armansson, M. O.
+    #         Ulfarsson, H. Deborah and J. R. Sveinsson, "Creating RGB
+    #         Images from Hyperspectral Images Using a Color Matching
+    #         Function," IGARSS 2020 - 2020 IEEE International
+    #         Geoscience and Remote Sensing Symposium, 2020,
+    #         pp. 2045-2048, doi: 10.1109/IGARSS39084.2020.9323397.
+    #     HSI2RGB code from:
+    #         https://github.com/JakobSig/HSI2RGB
     # -------------------------------------------------------------------------
     
     # Get image and wavelengths
@@ -232,13 +229,13 @@ def main(name, epochs, epoch, legend):
     # GROUND TRUTH GENERATION
     # -------------------------------------------------------------------------
     
-    gt = map_to_img(y, shape, [(0, 0, 0)] + colors_int_rgb[:num_classes])
+    gt = map_to_img(y, shape, [(0, 0, 0)] + colours_int_rgb[:num_classes])
     ax2.imshow(gt)
     
     # PREDICTION MAP GENERATION
     # -------------------------------------------------------------------------
     
-    pred_H_img = map_to_img(pred_map, shape, colors_int_rgb[:num_classes])
+    pred_H_img = map_to_img(pred_map, shape, colours_int_rgb[:num_classes])
     ax3.imshow(pred_H_img)
     
     # UNCERTAINTY MAP GENERATION

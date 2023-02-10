@@ -107,7 +107,7 @@ def main(epochs, epoch):
     passes = config.BAYESIAN_PASSES
     
     # Plot parameters
-    colors = config.COLORS
+    colours = config.COLOURS
     w = config.PLOT_W
     h = config.PLOT_H
     
@@ -187,7 +187,7 @@ def main(epochs, epoch):
         print("{}\t{}".format(name, data[name]))
     
     # Plot combined noise
-    plot_combined_noise(output_dir, noises, data, w, h, colors)
+    plot_combined_noise(output_dir, noises, data, w, h, colours)
 
 if __name__ == "__main__":
     args = parse_args()
@@ -195,7 +195,7 @@ if __name__ == "__main__":
         args.epoch = args.epochs
     epochs = {}
     epoch = {}
-    for i, name in enumerate(["BO", "IP", "KSC", "PU", "SV"]):
+    for i, name in enumerate(config.DATASETS_LIST):
         epochs[name] = args.epochs[i]
         epoch[name] = args.epoch[i]
     main(epochs, epoch)

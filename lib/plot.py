@@ -19,9 +19,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # PLOT FUNCTIONS
-# =============================================================================
+# ==============================================================================
 
-def plot_reliability_diagram(output_dir, data, w, h, colors, num_groups=10):
+def plot_reliability_diagram(output_dir, data, w, h, colours, num_groups=10):
     
     # Generate x axis labels and center of range (for optimal calibration)
     p_groups = np.linspace(0.0, 1.0, num_groups + 1)
@@ -41,9 +41,9 @@ def plot_reliability_diagram(output_dir, data, w, h, colors, num_groups=10):
     fig, ax = plt.subplots(figsize=(w, h))
     
     # Plots
-    for img_name in colors.keys():
+    for img_name in colours.keys():
         ax.plot(xticks[:len(data[img_name])], data[img_name], label=img_name,
-                color=colors[img_name])
+                color=colours[img_name])
     ax.plot(xticks, optimal, label="Optimal calibration", color='black',
             linestyle='dashed')
     
@@ -71,7 +71,7 @@ def plot_reliability_diagram(output_dir, data, w, h, colors, num_groups=10):
     plt.savefig(os.path.join(output_dir, "reliability_diagram.pdf"),
                 bbox_inches='tight')
 
-def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colors,
+def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
                                  H_limit=1.5, num_groups=15):
     
     # Labels
@@ -89,16 +89,16 @@ def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colors,
     fig, ax = plt.subplots(figsize=(w, h))
     
     # Plots
-    for img_name in colors.keys():
+    for img_name in colours.keys():
         ax.plot(xticks[:len(acc_data[img_name])], acc_data[img_name],
-                label="{} acc.".format(img_name), color=colors[img_name],
+                label="{} acc.".format(img_name), color=colours[img_name],
                 zorder=3)
         ax.bar(xticks[:len(px_data[img_name])], px_data[img_name],
-               label="{} px %".format(img_name), color=colors[img_name],
+               label="{} px %".format(img_name), color=colours[img_name],
                alpha=0.18, zorder=2)
         ax.bar(xticks[:len(px_data[img_name])],
                [-0.007 for i in px_data[img_name]], bottom=px_data[img_name],
-               color=colors[img_name], zorder=3)
+               color=colours[img_name], zorder=3)
     
     # Axes label
     ax.set_xlabel("Uncertainty")
@@ -153,7 +153,7 @@ def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colors,
                 bbox_inches='tight')
 
 def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
-                           colors):
+                           colours):
     
     # Xticks
     xticks = np.arange(len(avg_Ep))
@@ -162,13 +162,13 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
     fig, ax = plt.subplots(figsize=(w, h))
     
     # Plots
-    ax.bar(xticks, avg_Ep, label="Ep", color=colors["BO"], zorder=3)
+    ax.bar(xticks, avg_Ep, label="Ep", color=colours["BO"], zorder=3)
     ax.bar(xticks, avg_H_Ep, bottom=avg_Ep, label="H - Ep",
-           color=colors["KSC"], zorder=3)
+           color=colours["KSC"], zorder=3)
     
     # Highlight avg border
     ax.bar(xticks[-1], avg_Ep[-1] + avg_H_Ep[-1], zorder=2,
-           edgecolor=colors["IP"], linewidth=4)
+           edgecolor=colours["IP"], linewidth=4)
     
     # Axes label
     ax.set_xlabel("{} classes".format(name))
@@ -188,7 +188,7 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
     file_name = "{}_{}_class_uncertainty.pdf".format(name, epoch)
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
 
-def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colors):
+def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colours):
     
     # Add the data for plotting the maximum uncertainty line
     max_uncertainty = np.log(len(data) - 1)
@@ -202,11 +202,11 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colors):
     
     # Plots
     for n, d in enumerate(data[:-3]):
-        ax.plot(labels, d, color=colors["BO"])
-    ax.plot(labels, data[-3], color=colors["BO"], label="classes")
-    ax.plot(labels, data[-2], color=colors["IP"], label="avg",
+        ax.plot(labels, d, color=colours["BO"])
+    ax.plot(labels, data[-3], color=colours["BO"], label="classes")
+    ax.plot(labels, data[-2], color=colours["IP"], label="avg",
             linestyle='dashed')
-    ax.plot(labels, data[-1], color=colors["KSC"], label="max",
+    ax.plot(labels, data[-1], color=colours["KSC"], label="max",
             linestyle='dashed')
     
     # Axes label
@@ -237,7 +237,7 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colors):
     plt.savefig(os.path.join(output_dir, "{}_noise.pdf".format(name)),
                 bbox_inches='tight')
 
-def plot_combined_noise(output_dir, labels, data, w, h, colors):
+def plot_combined_noise(output_dir, labels, data, w, h, colours):
     
     # Labels and xticks
     xticks = np.linspace(0.0, labels[-1], 11)
@@ -247,7 +247,7 @@ def plot_combined_noise(output_dir, labels, data, w, h, colors):
     
     # Plots
     for name, d in data.items():
-        ax.plot(labels, d, color=colors[name], label=name)
+        ax.plot(labels, d, color=colours[name], label=name)
     
     # Axes label
     ax.set_xlabel("Noise factor")
@@ -278,7 +278,7 @@ def plot_combined_noise(output_dir, labels, data, w, h, colors):
                 bbox_inches='tight')
 
 def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
-                           h, colors):
+                           h, colours):
     
     # Xticks
     xticks = np.arange(len(data[0]))
@@ -289,10 +289,10 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
     fig, ax = plt.subplots(figsize=(w, h))
     
     # Plots
-    ax.bar(xticks_0, data[0], label="Ep", color=colors["BO"], width=0.35,
+    ax.bar(xticks_0, data[0], label="Ep", color=colours["BO"], width=0.35,
            zorder=3)
-    ax.bar(xticks_1, data[1], label="Ep mixed", color=colors["SV"], width=0.35,
-           zorder=3)
+    ax.bar(xticks_1, data[1], label="Ep mixed", color=colours["SV"],
+           width=0.35, zorder=3)
     
     # Axes label
     ax.set_xlabel("{} mixed classes".format(name))
@@ -312,4 +312,3 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
     # Save
     file_name = "{}_{}_mixed_classes.pdf".format(name, epoch)
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-

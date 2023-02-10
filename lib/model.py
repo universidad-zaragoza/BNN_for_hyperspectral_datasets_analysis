@@ -27,22 +27,22 @@ def get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
     
     Parameters
     ----------
-    dataset_size: int
+    dataset_size : int
         Number of pixels of the dataset.
-    num_features: int
+    num_features : int
         Number of features of each pixel.
-    num_classes: int
+    num_classes : int
         Number of classes of the dataset.
-    l1_n: int
+    l1_n : int
         Number of neurons of the first hidden layer.
-    l2_n: int
+    l2_n : int
         Number of neurons of the second hidden layer
-    learning_rate: float
+    learning_rate : float
         Initial learning rate.
     
     Returns
     -------
-    TensorFlow Keras Sequential
+    model : TensorFlow Keras Sequential
         Bayesian model ready to receive and train hyperspectral data.
     """
     

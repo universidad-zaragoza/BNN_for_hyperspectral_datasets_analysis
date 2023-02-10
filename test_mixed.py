@@ -101,7 +101,7 @@ def main(epochs, epoch):
     passes = config.BAYESIAN_PASSES
     
     # Plot parameters
-    colors = config.COLORS
+    colours = config.COLOURS
     w = config.PLOT_W
     h = config.PLOT_H
     
@@ -178,7 +178,7 @@ def main(epochs, epoch):
         data = [[avg_Ep[class_a], avg_Ep[class_b], avg_Ep[-1]],
                 [m_avg_Ep[class_a], m_avg_Ep[class_b], m_avg_Ep[-1]]]
         plot_mixed_uncertainty(output_dir, name, epoch[name], data, class_a,
-                               class_b, w, h, colors)
+                               class_b, w, h, colours)
     
     # Save table
     output_file = os.path.join(output_dir, "mixed_classes.txt")
@@ -191,7 +191,7 @@ if __name__ == "__main__":
         args.epoch = args.epochs
     epochs = {}
     epoch = {}
-    for i, name in enumerate(["BO", "IP", "KSC", "PU", "SV"]):
+    for i, name in enumerate(config.DATASETS_LIST):
         epochs[name] = args.epochs[i]
         epoch[name] = args.epoch[i]
     main(epochs, epoch)

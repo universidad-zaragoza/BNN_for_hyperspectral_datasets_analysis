@@ -31,16 +31,19 @@ def _load_image(image_info, data_path):
     
     Parameters
     ----------
-    image_info: dict
+    image_info : dict
         Dict structure with information of the image. Described in the
         config module of BNN4HI package.
-    data_path: String
-        Absolute path of the hyperspectral images directory.
+    data_path : str
+        Path of the hyperspectral images and ground truth files. It can
+        be an absolute path or relative from the execution path.
     
     Returns
     -------
-    NumPy array, NumPy array
-        The image and the ground truth data.
+    X : ndarray
+        Hyperspectral image.
+    y : ndarray
+        Ground truth.
     """
     
     # Image name
@@ -89,12 +92,12 @@ def _standardise(X):
     
     Parameters
     ----------
-    X: NumPy array
+    X : ndarray
         Set of hyperspectral pixels.
     
     Returns
     -------
-    NumPy array
+    X_standardised : ndarray
         The received set of pixels standardised.
     """
     
@@ -105,12 +108,12 @@ def _normalise(X):
     
     Parameters
     ----------
-    X: NumPy array
+    X : ndarray
         Set of hyperspectral pixels.
     
     Returns
     -------
-    NumPy array
+    X_normalised : ndarray
         The received set of pixels normalised.
     """
     
@@ -122,19 +125,21 @@ def _preprocess(X, y, standardisation=False, only_labelled=True):
     
     Parameters
     ----------
-    X: NumPy array
+    X : ndarray
         Hyperspectral image.
-    y: NumPy array
+    y : ndarray
         Ground truth of `X`.
-    standardistion: bool
+    standardistion : bool, optional (default: False)
         Flag to activate standardisation.
-    only_labelled: bool
+    only_labelled : bool, optional (default: True)
         Flag to remove unlabelled pixels.
     
     Returns
     -------
-    NumPy array, NumPy array
-        Preprocessed data of the hyperspectral image and ground truth.
+    X : ndarray
+        Preprocessed data of the hyperspectral image.
+    y : ndarray
+        Preprocessed data of ground truth.
     """
     
     # Reshape them to ignore spatiality
@@ -167,6 +172,38 @@ def _preprocess(X, y, standardisation=False, only_labelled=True):
 # =============================================================================
 
 def get_dataset(dataset, data_path, p_train, seed=35):
+    """Returns the preprocessed training and testing data and labels
+    
+    Parameters
+    ----------
+    dataset : dict
+        Dict structure with information of the image. Described in the
+        config module of BNN4HI package.
+    data_path : str
+        Path of the datasets. It can be an absolute path or relative
+        from the execution path.
+    p_train : float
+        Represents, from 0.0 to 1.0, the proportion of the dataset that
+        will be used for the training set.
+    seed : int, optional (default: 35)
+        Random seed used to shuffle the data. The same seed will
+        produce the same distribution of pixels between train and test
+        sets. The default value (35) is just there for reproducibility
+        purposes, as it is the used seed in the paper `Bayesian Neural
+        Networks to Analyze Hyperspectral Datasets Using Uncertainty
+        Metrics`.
+    
+    Returns
+    -------
+    X_train : ndarray
+        Training data set.
+    y_train : ndarray
+        Training data set labels.
+    X_test : ndarray
+        Testing data set.
+    y_test : ndarray
+        Testing data set labels.
+    """
     
     # Load image
     X, y = _load_image(dataset, data_path)
@@ -174,7 +211,7 @@ def get_dataset(dataset, data_path, p_train, seed=35):
     # Preprocess
     X, y = _preprocess(X, y, standardisation=True)
     
-    # Separate into train, val and test data sets
+    # Separate into train and test data sets
     p_test = 1 - p_train
     (X_train, X_test,
      y_train, y_test) = train_test_split(X, y, test_size=p_test,
@@ -185,11 +222,63 @@ def get_dataset(dataset, data_path, p_train, seed=35):
 # NOISY DATASET FUNCTIONS
 # =============================================================================
 
-def _generic_noise(X_test, p_noise):
-    """Generates random value variations for every feature of X_test"""
-    return rand(-2**15, 2**15 - 1, size=X_test.shape, dtype='int16')*p_noise
+def _generic_noise(shape, p_noise):
+    """Generates an array of `int16` random value variations
+    
+    Parameters
+    ----------
+    shape : tuple of ints
+        The shape of the expected array.
+    p_noise : float
+        Represents, from 0.0 to 1.0, the noise factor. The closest to
+        1.0 will produce the higher noise values.
+    
+    Returns
+    -------
+    variations : ndarray
+        Array of random variations within the values range of `int16`
+        and proportional to `p_noise`.
+    """
+    
+    return rand(-2**15, 2**15 - 1, size=shape, dtype='int16')*p_noise
 
 def get_noisy_dataset(dataset, data_path, p_train, noises, seed=35):
+    """Returns train set and several test sets with increasing noise
+    
+    Parameters
+    ----------
+    dataset: dict
+        Dict structure with information of the image. Described in the
+        config module of BNN4HI package.
+    data_path: str
+        Path of the datasets. It can be an absolute path or relative
+        from the execution path.
+    p_train: float
+        Represents, from 0.0 to 1.0, the proportion of the dataset that
+        will be used for the training set.
+    noises : array_like of floats
+        Each value represents, from 0.0 to 1.0, one noise factor. The
+        closest to 1.0 will produce the higher noise values. A testing
+        set will be generated for each received noise.
+    seed: int, optional (default: 35)
+        Random seed used to shuffle the data. The same seed will
+        produce the same distribution of pixels between train and test
+        sets. The default value (35) is just there for reproducibility
+        purposes, as it is the used seed in the paper `Bayesian Neural
+        Networks to Analyze Hyperspectral Datasets Using Uncertainty
+        Metrics`.
+    
+    Returns
+    -------
+    X_train : ndarray
+        Training data set.
+    y_train : ndarray
+        Training data set labels.
+    noisy_X_tests : ndarray
+        One testing data set per received noise.
+    y_test : ndarray
+        Testing data set labels. It is the same for every testing set.
+    """
     
     # Load image
     X, y = _load_image(dataset, data_path)
@@ -210,10 +299,10 @@ def get_noisy_dataset(dataset, data_path, p_train, noises, seed=35):
     noisy_X_tests = []
     for noise in noises:
         
-        # Add noise to X_test
-        noisy_X_tests.append(X_test + _generic_noise(X_test, noise))
+        # Add noise to `X_test` and append it to `noisy_X_tests`
+        noisy_X_tests.append(X_test + _generic_noise(X_test.shape, noise))
     
-    # Standardise X_train and each noisy_X_tests
+    # Standardise `X_train` and each `noisy_X_tests`
     X_train = (X_train - X_mean) / X_std
     for n, X_test in enumerate(noisy_X_tests):
         noisy_X_tests[n] = (X_test - X_mean) / X_std
@@ -225,7 +314,19 @@ def get_noisy_dataset(dataset, data_path, p_train, noises, seed=35):
 # =============================================================================
 
 def _mix_classes(y_train, class_a, class_b):
-    """Mixes the labels between two classes"""
+    """Mixes the labels between two classes
+    
+    It does not return, the `y_train` array is modified in-place.
+    
+    Parameters
+    ----------
+    y_train : ndarray
+        Training data set labels to be modified.
+    class_a : int
+        Number of the first class to be mixed.
+    class_b : int
+        Number of the second class to be mixed.
+    """
     
     # Get the indices of the pixels from both classes
     index = (y_train == class_a) | (y_train == class_b)
@@ -238,6 +339,43 @@ def _mix_classes(y_train, class_a, class_b):
     y_train[index] = values
 
 def get_mixed_dataset(dataset, data_path, p_train, class_a, class_b, seed=35):
+    """Returns the datasets with mixed classes on the training set
+    
+    Parameters
+    ----------
+    dataset : dict
+        Dict structure with information of the image. Described in the
+        config module of BNN4HI package.
+    data_path : str
+        Path of the datasets. It can be an absolute path or relative
+        from the execution path.
+    p_train : float
+        Represents, from 0.0 to 1.0, the proportion of the dataset that
+        will be used for the training set.
+    class_a : int
+        Number of the first class to be mixed.
+    class_b : int
+        Number of the second class to be mixed.
+    seed : int, optional (default: 35)
+        Random seed used to shuffle the data. The same seed will
+        produce the same distribution of pixels between train and test
+        sets. The default value (35) is just there for reproducibility
+        purposes, as it is the used seed in the paper `Bayesian Neural
+        Networks to Analyze Hyperspectral Datasets Using Uncertainty
+        Metrics`.
+    
+    Returns
+    -------
+    X_train : ndarray
+        Training data set.
+    y_train : ndarray
+        Training data set labels with mixed labels for `class_a` and
+        `class_b`.
+    X_test : ndarray
+        Testing data set.
+    y_test : ndarray
+        Testing data set labels.
+    """
     
     # Get dataset
     X_train, y_train, X_test, y_test = get_dataset(dataset, data_path, p_train,
@@ -252,6 +390,27 @@ def get_mixed_dataset(dataset, data_path, p_train, class_a, class_b, seed=35):
 # =============================================================================
 
 def get_map(dataset, data_path):
+    """Returns all the pixels and labels of the image preprocessed
+    
+    Parameters
+    ----------
+    dataset : dict
+        Dict structure with information of the image. Described in the
+        config module of BNN4HI package.
+    data_path : str
+        Path of the datasets. It can be an absolute path or relative
+        from the execution path.
+    
+    Returns
+    -------
+    X : ndarray
+        Hyperspectral image pixels standardised.
+    y : ndarray
+        Ground truth.
+    shape : tuple of ints
+        Original shape to reconstruct the image (without channels, just
+        height and width).
+    """
     
     # Load image
     X, y = _load_image(dataset, data_path)
@@ -262,20 +421,28 @@ def get_map(dataset, data_path):
     
     return X, y, shape
 
-def get_labelled(dataset, data_path):
-    
-    # Load image
-    X, y = _load_image(dataset, data_path)
-    
-    # Preprocess
-    X, y = _preprocess(X, y, standardisation=True)
-    
-    return X, y
-
 # IMAGE FUNCTIONS (FOR RGB REPRESENTATION)
 # =============================================================================
 
 def get_image(dataset, data_path):
+    """Returns the image prepared for the RGB representation algorithm
+    
+    Parameters
+    ----------
+    dataset : dict
+        Dict structure with information of the image. Described in the
+        config module of BNN4HI package.
+    data_path : str
+        Path of the datasets. It can be an absolute path or relative
+        from the execution path.
+    
+    Returns
+    -------
+    X : ndarray
+        Hyperspectral image pixels normalised.
+    shape : tuple of ints
+        Original shape to reconstruct the image.
+    """
     
     # Load image
     X, y = _load_image(dataset, data_path)
@@ -288,4 +455,3 @@ def get_image(dataset, data_path):
     X = _normalise(X)
     
     return X, shape
-

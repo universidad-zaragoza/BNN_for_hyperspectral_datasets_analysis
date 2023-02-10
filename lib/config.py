@@ -22,8 +22,8 @@ import numpy as np
 # Uncomment if there are GPU memory errors during training
 #os.environ['TF_GPU_ALLOCATOR'] = 'cuda_malloc_async'
 
-# Uncomment for CPU execution
-# Only recommended if there are GPU memory errors during testing
+# Uncomment for CPU execution. Only recommended if there are GPU memory
+# errors during testing
 #os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
 # Input and output directories
@@ -33,10 +33,9 @@ LOG_DIR = "./Models"
 # DATA INFORMATION
 # =============================================================================
 
-# Image files
-#     Noise step and stop values are empirically selected for better
-#     visualisation. For other datasets it will be necessary to adjust
-#     them.
+# Datasets
+#     The classes to mix when training with mixed classes have been
+#     selected for having enough and similar number of labelled pixels.
 #     Wavelengths have been selected according to the sensor and the
 #     characteristics of each image for a better RGB representation.
 url_base = "http://www.ehu.es/ccwintco/uploads"
@@ -50,8 +49,6 @@ DATASETS = {
         'url_gt': url_base + "/5/58/Botswana_gt.mat",
         'num_classes': 14,
         'num_features': 145,
-        'noise_stop': 0.13,
-        'noise_step': 0.01,
         'mixed_class_A': 4,
         'mixed_class_B': 5,
         # NASA EO-1 wavelengths (for RGB representation)
@@ -76,8 +73,6 @@ DATASETS = {
         'url_gt': url_base + "/c/c4/Indian_pines_gt.mat",
         'num_classes': 16,
         'num_features': 200,
-        'noise_stop': 0.13,
-        'noise_step': 0.01,
         'mixed_class_A': 2,
         'mixed_class_B': 5,
         # AVIRIS wavelengths for IP (for RGB representation)
@@ -106,8 +101,6 @@ DATASETS = {
         'url_gt': url_base + "/a/a6/KSC_gt.mat",
         'num_classes': 13,
         'num_features': 176,
-        'noise_stop': 0.13,
-        'noise_step': 0.01,
         'mixed_class_A': 8,
         'mixed_class_B': 11,
         # AVIRIS wavelengths for KSC (for RGB representation)
@@ -136,8 +129,6 @@ DATASETS = {
         'url_gt': url_base + "/5/50/PaviaU_gt.mat",
         'num_classes': 9,
         'num_features': 103,
-        'noise_stop': 0.62,
-        'noise_step': 0.02,
         'mixed_class_A': 3,
         'mixed_class_B': 7,
         # ROSIS wavelengths (for RGB representation)
@@ -152,8 +143,6 @@ DATASETS = {
         'url_gt': url_base + "/f/fa/Salinas_gt.mat",
         'num_classes': 16,
         'num_features': 204,
-        'noise_stop': 0.13,
-        'noise_step': 0.01,
         'mixed_class_A': 1,
         'mixed_class_B': 6,
         # AVIRIS wavelengths for SV (for RGB representation)
@@ -174,6 +163,11 @@ DATASETS = {
             216, 217, 218, 219, 220, 221, 222]).tolist()
     }
 }
+
+# Sorted datasets list
+#     It is used to manage parameters order, as dict items are ordered
+#     or not depending on python version.
+DATASETS_LIST = ["BO", "IP", "KSC", "PU", "SV"]
 
 # TRAINING AND TESTING PARAMETERS
 # =============================================================================
@@ -196,16 +190,16 @@ BAYESIAN_PASSES = 100
 PLOT_W = 7
 PLOT_H = 4
 
-# Plots colors
-COLORS = {"BO": "#2B4162",
-          "IP": "#FA9F42",
-          "KSC": "#0B6E4F",
-          "PU": "#721817",
-          "SV": "#D496A7"}
+# Plots colours
+COLOURS = {"BO": "#2B4162",
+           "IP": "#FA9F42",
+           "KSC": "#0B6E4F",
+           "PU": "#721817",
+           "SV": "#D496A7"}
 
-# Maps colors
-# 99% accessibility colors (https://sashamaps.net/docs/resources/20-colors/)
-COLORS_RGB = [
+# Maps colours
+# 99% accessibility colours (https://sashamaps.net/docs/resources/20-colors/)
+COLOURS_RGB = [
     (0.9019607843137255, 0.09803921568627451, 0.29411764705882354, 1.0),
     (0.23529411764705882, 0.7058823529411765, 0.29411764705882354, 1.0),
     (1.0, 0.8823529411764706, 0.09803921568627451, 1.0),
@@ -222,28 +216,28 @@ COLORS_RGB = [
     (0.6666666666666666, 1.0, 0.7647058823529411, 1.0),
     (0.0, 0.0, 0.5019607843137255, 1.0),
     (0.5019607843137255, 0.5019607843137255, 0.5019607843137255, 1.0)]
-COLORS_INT_RGB = [
+COLOURS_INT_RGB = [
     (230, 25, 75), (60, 180, 75), (255, 225, 25), (0, 130, 200),
     (245, 130, 48), (70, 240, 240), (240, 50, 230), (250, 190, 212),
     (0, 128, 128), (220, 190, 255), (170, 110, 40), (255, 250, 200),
     (128, 0, 0), (170, 255, 195), (0, 0, 128), (128, 128, 128)]
 GRADIENTS_RGB = [
-(0.30196078431372547, 0.9019607843137255, 0.21176470588235294, 1.0),
-(0.5294117647058824, 0.8980392156862745, 0.20784313725490197, 1.0),
-(0.7568627450980392, 0.8980392156862745, 0.20392156862745098, 1.0),
-(0.8980392156862745, 0.807843137254902, 0.2, 1.0),
-(0.8941176470588236, 0.5725490196078431, 0.19607843137254902, 1.0),
-(0.8941176470588236, 0.33725490196078434, 0.19215686274509805, 1.0),
-(0.8941176470588236, 0.18823529411764706, 0.2784313725490196, 1.0),
-(0.8901960784313725, 0.1843137254901961, 0.5098039215686274, 1.0),
-(0.8901960784313725, 0.1803921568627451, 0.7411764705882353, 1.0),
-(0.8, 0.17647058823529413, 0.8901960784313725, 1.0),
-(0.5607843137254902, 0.17254901960784313, 0.8862745098039215, 1.0),
-(0.3176470588235294, 0.16862745098039217, 0.8862745098039215, 1.0),
-(0.16470588235294117, 0.25098039215686274, 0.8862745098039215, 1.0),
-(0.1607843137254902, 0.49019607843137253, 0.8823529411764706, 1.0),
-(0.1568627450980392, 0.7254901960784313, 0.8823529411764706, 1.0),
-(0.15294117647058825, 0.8823529411764706, 0.792156862745098, 1.0)]
+    (0.30196078431372547, 0.9019607843137255, 0.21176470588235294, 1.0),
+    (0.5294117647058824, 0.8980392156862745, 0.20784313725490197, 1.0),
+    (0.7568627450980392, 0.8980392156862745, 0.20392156862745098, 1.0),
+    (0.8980392156862745, 0.807843137254902, 0.2, 1.0),
+    (0.8941176470588236, 0.5725490196078431, 0.19607843137254902, 1.0),
+    (0.8941176470588236, 0.33725490196078434, 0.19215686274509805, 1.0),
+    (0.8941176470588236, 0.18823529411764706, 0.2784313725490196, 1.0),
+    (0.8901960784313725, 0.1843137254901961, 0.5098039215686274, 1.0),
+    (0.8901960784313725, 0.1803921568627451, 0.7411764705882353, 1.0),
+    (0.8, 0.17647058823529413, 0.8901960784313725, 1.0),
+    (0.5607843137254902, 0.17254901960784313, 0.8862745098039215, 1.0),
+    (0.3176470588235294, 0.16862745098039217, 0.8862745098039215, 1.0),
+    (0.16470588235294117, 0.25098039215686274, 0.8862745098039215, 1.0),
+    (0.1607843137254902, 0.49019607843137253, 0.8823529411764706, 1.0),
+    (0.1568627450980392, 0.7254901960784313, 0.8823529411764706, 1.0),
+    (0.15294117647058825, 0.8823529411764706, 0.792156862745098, 1.0)]
 GRADIENTS_INT_RGB = [
     (77, 230, 54), (135, 229, 53), (193, 229, 52), (229, 206, 51),
     (228, 146, 50), (228, 86, 49), (228, 48, 71), (227, 47, 130),
