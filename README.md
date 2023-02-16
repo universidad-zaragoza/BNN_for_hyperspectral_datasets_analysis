@@ -2,6 +2,10 @@
 
 This repository contains python code to train bayesian neural networks for some of the most widely used open hyperspectral imaging datasets and to analyse the results.
 
+We will refer to the repository as `bnn4hi`. To clone it, it is recommended to change the folder destination, especially to use it as a module with the import clause:
+
+> git clone https://github.com/universidad-zaragoza/BNN_for_hyperspectral_datasets_analysis.git bnn4hi
+
 This is the code of the paper *Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics*. If it is useful to you, please cite:
 
 A. Alcolea and J. Resano, "Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics", in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-10, 2022, doi: 10.1109/TGRS.2022.3205119.
