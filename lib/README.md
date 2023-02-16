@@ -44,7 +44,7 @@ results of the analysed bayesian predictions.
 
 Files HSI2RGB.py and D_illuminants.mat are used in `plot.py` to generate RGB images from hyperspectral images. Both files are extracted from their original repository:
 
-[https://github.com/JakobSig/HSI2RGB][https://github.com/JakobSig/HSI2RGB]
+[https://github.com/JakobSig/HSI2RGB](https://github.com/JakobSig/HSI2RGB)
 
 This method is published in:
 
