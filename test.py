@@ -18,11 +18,11 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from lib import config
-from lib.data import get_dataset
-from lib.model import get_model
-from lib.analysis import *
-from lib.plot import (plot_class_uncertainty, plot_reliability_diagram,
+from .lib import config
+from .lib.data import get_dataset
+from .lib.model import get_model
+from .lib.analysis import *
+from .lib.plot import (plot_class_uncertainty, plot_reliability_diagram,
                       plot_accuracy_vs_uncertainty)
 
 # PARAMETERS
@@ -33,6 +33,7 @@ def parse_args():
     
     Takes the list of strings received at sys.argv and generates a
     namespace asigning them to objects.
+    
     
     Returns
     -------
@@ -90,9 +91,9 @@ def main(epochs, epoch):
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
-    base_dir = config.LOG_DIR
+    base_dir = config.MODELS_DIR
     datasets = config.DATASETS
-    output_dir = "Test"
+    output_dir = config.TEST_DIR
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     

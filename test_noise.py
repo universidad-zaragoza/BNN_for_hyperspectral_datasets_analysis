@@ -18,11 +18,11 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from lib import config
-from lib.data import get_noisy_dataset
-from lib.model import get_model
-from lib.analysis import bayesian_predictions, analyse_entropy
-from lib.plot import plot_combined_noise
+from .lib import config
+from .lib.data import get_noisy_dataset
+from .lib.model import get_model
+from .lib.analysis import bayesian_predictions, analyse_entropy
+from .lib.plot import plot_combined_noise
 
 # Testing all the images and generating all the noisy data can generate GPU
 # memory errors.
@@ -37,7 +37,7 @@ def parse_args():
     """Analyses the received parameters and returns them organised.
     
     Takes the list of strings received at sys.argv and generates a
-    namespace asigning them to objects.
+    namespace assigning them to objects.
     
     Returns
     -------
@@ -66,7 +66,7 @@ def parse_args():
     # Return the analysed parameters
     return parser.parse_args()
 
-# PREDICT FUNCTIONS
+# PREDICT FUNCTION
 # =============================================================================
 
 def noise_predict(model, X_test, y_test, samples=100):
@@ -89,9 +89,9 @@ def main(epochs, epoch):
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
-    base_dir = config.LOG_DIR
+    base_dir = config.MODELS_DIR
     datasets = config.DATASETS
-    output_dir = "Test"
+    output_dir = config.TEST_DIR
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     

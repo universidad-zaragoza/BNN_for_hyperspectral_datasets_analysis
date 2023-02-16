@@ -19,9 +19,9 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from lib import config
-from lib.data import get_dataset, get_mixed_dataset
-from lib.model import get_model
+from .lib import config
+from .lib.data import get_dataset, get_mixed_dataset
+from .lib.model import get_model
 
 # PARAMETERS
 # =============================================================================
@@ -107,7 +107,7 @@ def main(name, epochs, period, mix_classes):
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
-    base_output_dir = config.LOG_DIR
+    base_output_dir = config.MODELS_DIR
     datasets = config.DATASETS
     
     # Model parameters

@@ -13,22 +13,16 @@ __license__ = "GPLv3"
 __credits__ = ["Adrián Alcolea", "Javier Resano"]
 
 import os
-import sys
-import math
 import datetime
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-import matplotlib.gridspec as grid
-from spectral import imshow
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from lib import config
-from lib.data import get_map, get_image, _load_image
-from lib.analysis import bayesian_predictions, map_prediction
-from lib.HSI2RGB import HSI2RGB
+from .lib import config
+from .lib.data import get_map, get_image
+from .lib.analysis import bayesian_predictions, map_prediction
+from .lib.plot import plot_maps
 
 # Some of the images are very big, so map testing generates GPU memory errors.
 # Try to comment this line if you have a big GPU. In any case, it will save the
@@ -73,31 +67,8 @@ def parse_args():
     # Return the analysed parameters
     return parser.parse_args()
 
-# MAP FUNCTIONS
+# PREDICT FUNCTION
 # =============================================================================
-
-def uncertainty_to_map(uncertainty, num_classes, slots=10, max_H=0):
-    if max_H == 0:
-        max_H = math.log(num_classes)
-    u_map = np.zeros(uncertainty.shape, dtype="int")
-    ranges = np.linspace(0.0, max_H, num=slots+1)
-    labels = ["0.0-{:.2f}".format(ranges[1])]
-    slot = 1
-    start = ranges[1]
-    for end in ranges[2:]:
-        u_map[(start <= uncertainty) & (uncertainty <= end)] = slot
-        labels.append("{:.2f}-{:.2f}".format(start, end))
-        start = end
-        slot +=1
-    return u_map, labels
-
-def map_to_img(prediction, shape, colours, metric=None, th=0.0, bg=(0, 0, 0)):
-    img_shape = (shape[0], shape[1], 3)
-    if metric is not None:
-        return np.reshape([colours[int(p)] if m < th else bg
-                           for p, m in zip(prediction, metric)], img_shape)
-    else:
-        return np.reshape([colours[int(p)] for p in prediction], img_shape)
 
 def predict(model, X, samples=100):
     
@@ -117,9 +88,9 @@ def main(name, epochs, epoch, legend):
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
-    base_dir = config.LOG_DIR
+    base_dir = config.MODELS_DIR
     datasets = config.DATASETS
-    output_dir = "Test"
+    output_dir = config.TEST_DIR
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     
@@ -135,10 +106,8 @@ def main(name, epochs, epoch, legend):
     passes = config.BAYESIAN_PASSES
     
     # Maps colours
-    colours_rgb = config.COLOURS_RGB
-    colours_int_rgb = config.COLOURS_INT_RGB
-    gradients_rgb = config.GRADIENTS_RGB
-    gradients_int_rgb = config.GRADIENTS_INT_RGB
+    colours = config.MAP_COLOURS
+    gradients = config.MAP_GRADIENTS
     
     # DATASET INFORMATION
     # -------------------------------------------------------------------------
@@ -164,7 +133,7 @@ def main(name, epochs, epoch, legend):
     # Get dataset
     X, y, shape = get_map(dataset, d_path)
     
-    # GENERATE OR LOAD PREDICTIONS AND UNCERTAINTY
+    # GENERATE OR LOAD MAP PREDICTIONS AND UNCERTAINTY
     # -------------------------------------------------------------------------
     
     # If prediction and uncertainty files already exist
@@ -191,72 +160,19 @@ def main(name, epochs, epoch, legend):
         # Liberate model
         del model
     
-    # PREPARE FIGURE
-    # -------------------------------------------------------------------------
-    
-    if name in ["IP", "KSC"]:
-        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
-        fig.set_size_inches(2*shape[1]/96, 2*shape[0]/96)
-    else:
-        fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4)
-        fig.set_size_inches(4*shape[1]/96, shape[0]/96)
-    
-    ax1.set_axis_off()
-    ax2.set_axis_off()
-    ax3.set_axis_off()
-    ax4.set_axis_off()
-    
-    # RGB IMAGE GENERATION
-    #     Using HSI2RGB algorithm from paper:
-    #         M. Magnusson, J. Sigurdsson, S. E. Armansson, M. O.
-    #         Ulfarsson, H. Deborah and J. R. Sveinsson, "Creating RGB
-    #         Images from Hyperspectral Images Using a Color Matching
-    #         Function," IGARSS 2020 - 2020 IEEE International
-    #         Geoscience and Remote Sensing Symposium, 2020,
-    #         pp. 2045-2048, doi: 10.1109/IGARSS39084.2020.9323397.
-    #     HSI2RGB code from:
-    #         https://github.com/JakobSig/HSI2RGB
+    # PLOT MAPS
     # -------------------------------------------------------------------------
     
     # Get image and wavelengths
     img, _ = get_image(dataset, d_path)
     wl = dataset['wl']
     
-    # Create RGB image (D65 illuminant and 0.002 threshold)
-    RGB_img = HSI2RGB(wl, img, shape[0], shape[1], 65, 0.002)
-    ax1.imshow(RGB_img)
-    
-    # GROUND TRUTH GENERATION
-    # -------------------------------------------------------------------------
-    
-    gt = map_to_img(y, shape, [(0, 0, 0)] + colours_int_rgb[:num_classes])
-    ax2.imshow(gt)
-    
-    # PREDICTION MAP GENERATION
-    # -------------------------------------------------------------------------
-    
-    pred_H_img = map_to_img(pred_map, shape, colours_int_rgb[:num_classes])
-    ax3.imshow(pred_H_img)
-    
-    # UNCERTAINTY MAP GENERATION
-    # -------------------------------------------------------------------------
-    
-    slots = 15
-    u_map, labels = uncertainty_to_map(H_map, num_classes, slots=slots,
-                                       max_H=1.5)
-    H_img = map_to_img(u_map, shape, gradients_int_rgb[:slots])
-    ax4.imshow(H_img)
-    
-    # PLOT IMAGE
-    # -------------------------------------------------------------------------
-    
-    plt.tight_layout(pad=0.5, w_pad=1.0, h_pad=1.0)
-    file = "H_{}.pdf".format(name)
-    plt.savefig(os.path.join(output_dir, file), bbox_inches='tight')
+    # Plot
+    plot_maps(output_dir, name, shape, num_classes, wl, img, y, pred_map,
+              H_map, colours, gradients)
 
 if __name__ == "__main__":
     args = parse_args()
     if args.epoch is None:
         args.epoch = args.epochs
     main(args.name, args.epochs, args.epoch, args.legend)
-

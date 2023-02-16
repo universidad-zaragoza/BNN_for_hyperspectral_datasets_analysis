@@ -18,11 +18,11 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from lib import config
-from lib.data import get_dataset, get_mixed_dataset
-from lib.model import get_model
-from lib.analysis import bayesian_predictions, analyse_entropy
-from lib.plot import plot_mixed_uncertainty
+from .lib import config
+from .lib.data import get_dataset, get_mixed_dataset
+from .lib.model import get_model
+from .lib.analysis import bayesian_predictions, analyse_entropy
+from .lib.plot import plot_mixed_uncertainty
 
 # PARAMETERS
 # =============================================================================
@@ -83,9 +83,9 @@ def main(epochs, epoch):
     
     # Input, output and dataset references
     d_path = config.DATA_PATH
-    base_dir = config.LOG_DIR
+    base_dir = config.MODELS_DIR
     datasets = config.DATASETS
-    output_dir = "Test"
+    output_dir = config.TEST_DIR
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     
@@ -164,7 +164,7 @@ def main(epochs, epoch):
         # Launch mixed predictions
         m_avg_Ep = predict(mixed_model, m_X_test, m_y_test, samples=passes)
         
-        # IMAGE-RELATED PLOTS
+        # TABLE AND PLOT
         # ---------------------------------------------------------------------
         
         # Save table values

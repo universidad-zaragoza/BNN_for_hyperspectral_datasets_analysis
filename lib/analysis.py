@@ -27,10 +27,10 @@ import numpy as np
 def _predictive_entropy(predictions):
     """Calculates the predictive entropy of `predictions`
     
-    The predictive entropy corresponds to the global uncertainty (H):
-    
-    .. math::
-        \\mathbb{H}\\left(\\mathbf{y}|\\mathbf{x},\\mathbf{D}\\right):=-\\sum_{k=1}^{K}\\left(\\frac{1}{T}\\sum_{t=1}^{T}a_{t}\\right)\\log\\left(\\frac{1}{T}\\sum_{t=1}^{T}a_{t}\\right)
+    The predictive entropy corresponds to the global uncertainty (H).
+    The correspondent equation can be found in the paper `Bayesian
+    Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty
+    Metrics`.
     
     Parameters
     ----------
@@ -60,10 +60,10 @@ def _predictive_entropy(predictions):
 def _expected_entropy(predictions):
     """Calculates the expected entropy of `predictions`
     
-    The expected entropy corresponds to the aleatoric uncertainty (Ep):
-    
-    .. math::
-        \\mathbb{E}_{p\\left(\\mathbf{w}|\\mathbf{D}\\right)}\\left[\\mathbb{H}\\left(\\mathbf{y}|\\mathbf{x},\\mathbf{w}\\right)\\right]:=\\frac{1}{T}\\sum_{t=1}^{T}\\left(-\\sum_{k=1}^{K}a_{t}\\log\\left(a_{t}\\right)\\right)
+    The expected entropy corresponds to the aleatoric uncertainty (Ep).
+    The correspondent equation can be found in the paper `Bayesian
+    Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty
+    Metrics`.
     
     Parameters
     ----------
@@ -140,7 +140,7 @@ def reliability_diagram(predictions, y_test, num_groups=10):
     
     return result
 
-def accuracy_vs_uncertainty(predictions, y_test, num_groups=15):
+def accuracy_vs_uncertainty(predictions, y_test, H_limit=1.5, num_groups=15):
     """Generates the `accuracy vs uncertainty` data
     
     Parameters
@@ -149,6 +149,8 @@ def accuracy_vs_uncertainty(predictions, y_test, num_groups=15):
         Array with the bayesian predictions.
     y_test : ndarray
         Testing data set labels.
+    H_limit : float, optional (default: 1.5)
+        The max value of the range of uncertainty.
     num_groups : int, optional (default: 15)
         Number of groups in which the prediction will be divided
         according to their uncertainty.
@@ -169,7 +171,7 @@ def accuracy_vs_uncertainty(predictions, y_test, num_groups=15):
     test_ok = np.mean(predictions, axis=0).argmax(axis=1) == y_test
     
     # Uncertainty groups to divide predictions
-    H_groups = np.linspace(0.0, 1.5, num_groups + 1)
+    H_groups = np.linspace(0.0, H_limit, num_groups + 1)
     
     H_acc = []
     p_pixels = []
