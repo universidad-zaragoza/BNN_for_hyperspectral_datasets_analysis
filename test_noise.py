@@ -6,9 +6,8 @@
 This module contains the main function to generate the `combined noise`
 plot of the trained bayesian models.
 
-This module is prepared to be launched from command line, but can also
-be imported from a python script. For that it may be necessary to
-modify the local imports by changing `lib` to `.lib`.
+This module is prepared to be launched from command line, as a script,
+but it can also be imported as a module from the bnn4hi package.
 """
 
 __version__ = "1.0.0"
@@ -24,11 +23,23 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from lib import config
-from lib.data import get_noisy_dataset
-from lib.model import get_model
-from lib.analysis import bayesian_predictions, analyse_entropy
-from lib.plot import plot_combined_noise
+if '.' in __name__:
+    
+    # To run as a module
+    from .lib import config
+    from .lib.data import get_noisy_dataset
+    from .lib.model import get_model
+    from .lib.analysis import bayesian_predictions, analyse_entropy
+    from .lib.plot import plot_combined_noise
+
+else:
+    
+    # To run as an script
+    from lib import config
+    from lib.data import get_noisy_dataset
+    from lib.model import get_model
+    from lib.analysis import bayesian_predictions, analyse_entropy
+    from lib.plot import plot_combined_noise
 
 # Testing all the images and generating all the noisy data can generate GPU
 # memory errors.

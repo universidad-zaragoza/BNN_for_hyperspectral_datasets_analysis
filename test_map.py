@@ -12,9 +12,8 @@ intended to show the relationship between those images and the
 importance of the information that can be extracted analysing the
 uncertainty.
 
-This module is prepared to be launched from command line, but can also
-be imported from a python script. For that it may be necessary to
-modify the local imports by changing `lib` to `.lib`.
+This module is prepared to be launched from command line, as a script,
+but it can also be imported as a module from the bnn4hi package.
 """
 
 __version__ = "1.0.0"
@@ -31,10 +30,21 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from lib import config
-from lib.data import get_map, get_image
-from lib.analysis import bayesian_predictions, map_prediction
-from lib.plot import plot_maps
+if '.' in __name__:
+    
+    # To run as a module
+    from .lib import config
+    from .lib.data import get_map, get_image
+    from .lib.analysis import bayesian_predictions, map_prediction
+    from .lib.plot import plot_maps
+
+else:
+    
+    # To run as an script
+    from lib import config
+    from lib.data import get_map, get_image
+    from lib.analysis import bayesian_predictions, map_prediction
+    from lib.plot import plot_maps
 
 # Some of the images are very big, so map testing generates GPU memory errors.
 # Try to comment this line if you have a big GPU. In any case, it will save the
