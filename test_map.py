@@ -1,8 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
+"""Map testing module of the bnn4hi package
 
+This module contains the main function to generate the `uncertainty
+map` of the bayesian trained model of a hyperspectral image.
+
+It is generated along with an RGB representation of the hyperspectral
+image, the ground truth and the `prediction map`. This visualisation is
+intended to show the relationship between those images and the
+importance of the information that can be extracted analysing the
+uncertainty.
+
+This module is prepared to be launched from command line, but can also
+be imported from a python script. For that it may be necessary to
+modify the local imports by changing `lib` to `.lib`.
 """
 
 __version__ = "1.0.0"
@@ -19,10 +31,10 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from .lib import config
-from .lib.data import get_map, get_image
-from .lib.analysis import bayesian_predictions, map_prediction
-from .lib.plot import plot_maps
+from lib import config
+from lib.data import get_map, get_image
+from lib.analysis import bayesian_predictions, map_prediction
+from lib.plot import plot_maps
 
 # Some of the images are very big, so map testing generates GPU memory errors.
 # Try to comment this line if you have a big GPU. In any case, it will save the
@@ -36,15 +48,15 @@ def parse_args():
     """Analyses the received parameters and returns them organised.
     
     Takes the list of strings received at sys.argv and generates a
-    namespace asigning them to objects.
+    namespace assigning them to objects.
     
     Returns
     -------
-    out: namespace
-        The namespace with the values of the received parameters asigned
-        to objects.
-    
+    out : namespace
+        The namespace with the values of the received parameters
+        assigned to objects.
     """
+    
     # Generate the parameter analyser
     parser = ArgumentParser(description = __doc__,
                             formatter_class = RawDescriptionHelpFormatter)
@@ -58,19 +70,37 @@ def parse_args():
                         help="Trained epochs.")
     parser.add_argument('-e', '--epoch',
                         type=int,
-                        help=("Selected epoch for testing. By default uses "
-                              "`epochs` value."))
-    parser.add_argument('-l', '--legend',
-                        action='store_true',
-                        help="Flag to activate the generation of legends.")
-
+                        help=("Selected checkpoint for testing. By default "
+                              "uses `epochs` value."))
+    
     # Return the analysed parameters
     return parser.parse_args()
 
 # PREDICT FUNCTION
 # =============================================================================
 
-def predict(model, X, samples=100):
+def map_predict(model, X, samples=100):
+    """Launches the bayesian map predictions
+    
+    Launches the necessary predictions over `model` to collect the data
+    to generate the `uncertainty map`.
+    
+    Parameters
+    ----------
+    model : TensorFlow Keras Sequential
+        The trained model.
+    X : ndarray
+        The hyperspectral image pixels standardised.
+    samples : int, optional (default: 100)
+        Number of bayesian passes to perform.
+    
+    Returns
+    -------
+    pred_map : ndarray
+        Array with the averages of the bayesian predictions.
+    H_map : ndarray
+        Array with the global uncertainty (H) values.
+    """
     
     # Bayesian stochastic passes
     predictions = bayesian_predictions(model, X, samples=samples)
@@ -78,10 +108,23 @@ def predict(model, X, samples=100):
     # Map prediction
     return map_prediction(predictions)
 
-# MAIN
+# MAIN FUNCTION
 # =============================================================================
 
-def main(name, epochs, epoch, legend):
+def test_map(name, epochs, epoch):
+    """Generates the `uncertainty map` of the trained bayesian model
+    
+    The final image is saved in the `TEST_DIR` defined in `config.py`.
+    
+    Parameters
+    ----------
+    name : str
+        Abbreviated name of the dataset.
+    epochs : int
+        Number of trained epochs.
+    epoch : list of ints
+        Selected checkpoint for testing.
+    """
     
     # CONFIGURATION (extracted here as variables just for code clarity)
     # -------------------------------------------------------------------------
@@ -151,7 +194,7 @@ def main(name, epochs, epoch, legend):
         model = tf.keras.models.load_model(model_dir)
         
         # Launch predictions
-        pred_map, H_map = predict(model, X, samples=passes)
+        pred_map, H_map = map_predict(model, X, samples=passes)
         
         # Save prediction and uncertainty files
         np.save(os.path.join(model_dir, "pred_map"), pred_map)
@@ -172,7 +215,13 @@ def main(name, epochs, epoch, legend):
               H_map, colours, gradients)
 
 if __name__ == "__main__":
+    
+    # Parse args
     args = parse_args()
+    
+    # Fill `epoch` argument if not received
     if args.epoch is None:
         args.epoch = args.epochs
-    main(args.name, args.epochs, args.epoch, args.legend)
+    
+    # Launch main function
+    test_map(args.name, args.epochs, args.epoch)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Model module of the BNN4HI package
+"""Model module of the bnn4hi package
 
 This module defines the bayesian model used to train.
 """

@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
+"""Testing module of the bnn4hi package
 
+This module contains the main function to test the calibration of the
+trained models generating the `reliability diagram`, test the accuracy
+of the models with respect to the uncertainty of the predictions
+generating the `uncertainty vs accuracy plot` and test the uncertainty
+of each model, class by class, generating the `class uncertainty plot`
+of each dataset.
+
+This module is prepared to be launched from command line, but can also
+be imported from a python script. For that it may be necessary to
+modify the local imports by changing `lib` to `.lib`.
 """
 
 __version__ = "1.0.0"
@@ -18,11 +28,11 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from .lib import config
-from .lib.data import get_dataset
-from .lib.model import get_model
-from .lib.analysis import *
-from .lib.plot import (plot_class_uncertainty, plot_reliability_diagram,
+from lib import config
+from lib.data import get_dataset
+from lib.model import get_model
+from lib.analysis import *
+from lib.plot import (plot_class_uncertainty, plot_reliability_diagram,
                       plot_accuracy_vs_uncertainty)
 
 # PARAMETERS
@@ -32,16 +42,15 @@ def parse_args():
     """Analyses the received parameters and returns them organised.
     
     Takes the list of strings received at sys.argv and generates a
-    namespace asigning them to objects.
-    
+    namespace assigning them to objects.
     
     Returns
     -------
-    out: namespace
-        The namespace with the values of the received parameters asigned
-        to objects.
-    
+    out : namespace
+        The namespace with the values of the received parameters
+        assigned to objects.
     """
+    
     # Generate the parameter analyser
     parser = ArgumentParser(description = __doc__,
                             formatter_class = RawDescriptionHelpFormatter)
@@ -50,14 +59,16 @@ def parse_args():
     parser.add_argument("epochs",
                         type=int,
                         nargs=5,
-                        help=("List of trained epochs. The order must be: BO, "
-                              "IP, KSC, PU and SV."))
+                        help=("List of the number of trained epochs of each "
+                              "model. The order must correspond to: BO, IP, "
+                              "KSC, PU and SV."))
     parser.add_argument('-e', '--epoch',
                         type=int,
                         nargs=5,
-                        help=("List of Selected epoch for testing. The order "
-                              "must be: BO, IP, KSC, PU and SV. By default "
-                              "uses `epochs` value."))
+                        help=("List of the epoch of the selected checkpoint "
+                              "for testing each model. The order must "
+                              "correspond to: BO, IP, KSC, PU and SV. By "
+                              "default it uses `epochs` value."))
     
     # Return the analysed parameters
     return parser.parse_args()
@@ -66,6 +77,49 @@ def parse_args():
 # =============================================================================
 
 def predict(model, X_test, y_test, samples=100):
+    """Launches the bayesian predictions
+    
+    Launches the necessary predictions over `model` to collect the data
+    to generate the `reliability diagram`, the `uncertainty vs accuracy
+    plot` and the `class uncertainty plot` of the model.
+    
+    To generate the `reliability diagram` the predictions are divided
+    into groups according to their predicted probability. To generate
+    the `uncertainty vs accuracy plot` the predictions are divided into
+    groups according to their uncertainty value. For that, it uses the
+    default number of groups defined in the `reliability_diagram` and
+    the `accuracy_vs_uncertainty` functions of `analysis.py`.
+    
+    Parameters
+    ----------
+    model : TensorFlow Keras Sequential
+        The trained model.
+    X_test : ndarray
+        Testing data set.
+    y_test : ndarray
+        Testing data set labels.
+    samples : int, optional (default: 100)
+        Number of bayesian passes to perform.
+    
+    Returns
+    -------
+    rd_data : list of float
+        List of the observed probabilities of each one of the predicted
+        probability groups.
+    acc_data : list of float
+        List of the accuracies of each one of the uncertainty groups.
+    px_data : list of float
+        List of the percentage of pixels belonging to each one of the
+        uncertainty groups.
+    avg_Ep : ndarray
+        List of the averages of the aleatoric uncertainty (Ep) of each
+        class. The last position also contains the average of the
+        entire image.
+    avg_H_Ep : ndarray
+        List of the averages of the epistemic uncertainty (H - Ep) of
+        each class. The last position also contains the average of the
+        entire image.
+    """
     
     # Bayesian stochastic passes
     predictions = bayesian_predictions(model, X_test, samples=samples)
@@ -81,10 +135,23 @@ def predict(model, X_test, y_test, samples=100):
     
     return rd_data, acc_data, px_data, avg_Ep, avg_H_Ep
 
-# MAIN
+# MAIN FUNCTION
 # =============================================================================
 
-def main(epochs, epoch):
+def test(epochs, epoch):
+    """Tests the trained bayesian models
+    
+    The plots are saved in the `TEST_DIR` defined in `config.py`.
+    
+    Parameters
+    ----------
+    epochs : list of ints
+        List of the number of trained epochs of each model. The order
+        must correspond to: BO, IP, KSC, PU and SV.
+    epoch : list of ints
+        List of the epoch of the selected checkpoint for testing each
+        model. The order must correspond to: BO, IP, KSC, PU and SV.
+    """
     
     # CONFIGURATION (extracted here as variables just for code clarity)
     # -------------------------------------------------------------------------
@@ -151,7 +218,7 @@ def main(epochs, epoch):
         # LOAD MODEL
         # ---------------------------------------------------------------------
         
-        # Load model
+        # Load trained model
         model = tf.keras.models.load_model(model_dir)
         
         # LAUNCH PREDICTIONS
@@ -183,7 +250,11 @@ def main(epochs, epoch):
     plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours)
 
 if __name__ == "__main__":
+    
+    # Parse args
     args = parse_args()
+    
+    # Generate parameter structures for main function
     if args.epoch is None:
         args.epoch = args.epochs
     epochs = {}
@@ -191,4 +262,6 @@ if __name__ == "__main__":
     for i, name in enumerate(config.DATASETS_LIST):
         epochs[name] = args.epochs[i]
         epoch[name] = args.epoch[i]
-    main(epochs, epoch)
+    
+    # Launch main function
+    test(epochs, epoch)

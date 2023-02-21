@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Config module of the BNN4HI package
+"""Config module of the bnn4hi package
 
 This module provides macros with data information, training and testing
 parameters and plotting configurations.
@@ -183,6 +183,9 @@ LEARNING_RATE = 1.0e-2
 
 # Bayesian passes
 BAYESIAN_PASSES = 100
+
+# List of noises for noise tests
+NOISES = np.arange(0.0, 0.61, 0.01)
 
 # PLOTTING CONFIGURATIONS
 # =============================================================================

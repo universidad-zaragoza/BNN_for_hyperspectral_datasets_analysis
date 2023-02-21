@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Plot module of the BNN4HI package
+"""Plot module of the bnn4hi package
 
 The functions of this module are used to generate plots using the
 results of the analysed bayesian predictions.

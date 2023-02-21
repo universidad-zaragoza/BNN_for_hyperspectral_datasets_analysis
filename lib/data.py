@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Data module of the BNN4HI package
+"""Data module of the bnn4hi package
 
 The functions of this module are used to load, preprocess and organise
 data from hyperspectral datasets.
@@ -33,7 +33,7 @@ def _load_image(image_info, data_path):
     ----------
     image_info : dict
         Dict structure with information of the image. Described in the
-        config module of BNN4HI package.
+        config module of bnn4hi package.
     data_path : str
         Path of the hyperspectral images and ground truth files. It can
         be an absolute path or relative from the execution path.
@@ -178,7 +178,7 @@ def get_dataset(dataset, data_path, p_train, seed=35):
     ----------
     dataset : dict
         Dict structure with information of the image. Described in the
-        config module of BNN4HI package.
+        config module of bnn4hi package.
     data_path : str
         Path of the datasets. It can be an absolute path or relative
         from the execution path.
@@ -249,7 +249,7 @@ def get_noisy_dataset(dataset, data_path, p_train, noises, seed=35):
     ----------
     dataset: dict
         Dict structure with information of the image. Described in the
-        config module of BNN4HI package.
+        config module of bnn4hi package.
     data_path: str
         Path of the datasets. It can be an absolute path or relative
         from the execution path.
@@ -345,7 +345,7 @@ def get_mixed_dataset(dataset, data_path, p_train, class_a, class_b, seed=35):
     ----------
     dataset : dict
         Dict structure with information of the image. Described in the
-        config module of BNN4HI package.
+        config module of bnn4hi package.
     data_path : str
         Path of the datasets. It can be an absolute path or relative
         from the execution path.
@@ -396,7 +396,7 @@ def get_map(dataset, data_path):
     ----------
     dataset : dict
         Dict structure with information of the image. Described in the
-        config module of BNN4HI package.
+        config module of bnn4hi package.
     data_path : str
         Path of the datasets. It can be an absolute path or relative
         from the execution path.
@@ -431,7 +431,7 @@ def get_image(dataset, data_path):
     ----------
     dataset : dict
         Dict structure with information of the image. Described in the
-        config module of BNN4HI package.
+        config module of bnn4hi package.
     data_path : str
         Path of the datasets. It can be an absolute path or relative
         from the execution path.

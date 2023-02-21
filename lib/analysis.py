@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Analysis module of the BNN4HI package
+"""Analysis module of the bnn4hi package
 
 The functions of this module are used to generate and analyse bayesian
 predictions.

@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
+"""Noise testing module of the bnn4hi package
 
+This module contains the main function to generate the `combined noise`
+plot of the trained bayesian models.
+
+This module is prepared to be launched from command line, but can also
+be imported from a python script. For that it may be necessary to
+modify the local imports by changing `lib` to `.lib`.
 """
 
 __version__ = "1.0.0"
@@ -18,11 +24,11 @@ import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 # Local imports
-from .lib import config
-from .lib.data import get_noisy_dataset
-from .lib.model import get_model
-from .lib.analysis import bayesian_predictions, analyse_entropy
-from .lib.plot import plot_combined_noise
+from lib import config
+from lib.data import get_noisy_dataset
+from lib.model import get_model
+from lib.analysis import bayesian_predictions, analyse_entropy
+from lib.plot import plot_combined_noise
 
 # Testing all the images and generating all the noisy data can generate GPU
 # memory errors.
@@ -41,11 +47,11 @@ def parse_args():
     
     Returns
     -------
-    out: namespace
-        The namespace with the values of the received parameters asigned
-        to objects.
-    
+    out : namespace
+        The namespace with the values of the received parameters
+        assigned to objects.
     """
+    
     # Generate the parameter analyser
     parser = ArgumentParser(description = __doc__,
                             formatter_class = RawDescriptionHelpFormatter)
@@ -54,14 +60,16 @@ def parse_args():
     parser.add_argument("epochs",
                         type=int,
                         nargs=5,
-                        help=("List of trained epochs. The order must be: BO, "
-                              "IP, KSC, PU and SV."))
+                        help=("List of the number of trained epochs of each "
+                              "model. The order must correspond to: BO, IP, "
+                              "KSC, PU and SV."))
     parser.add_argument('-e', '--epoch',
                         type=int,
                         nargs=5,
-                        help=("List of Selected epoch for testing. The order "
-                              "must be: BO, IP, KSC, PU and SV. By default "
-                              "uses `epochs` value."))    
+                        help=("List of the epoch of the selected checkpoint "
+                              "for testing each model. The order must "
+                              "correspond to: BO, IP, KSC, PU and SV. By "
+                              "default it uses `epochs` value."))
     
     # Return the analysed parameters
     return parser.parse_args()
@@ -70,6 +78,29 @@ def parse_args():
 # =============================================================================
 
 def noise_predict(model, X_test, y_test, samples=100):
+    """Launches the bayesian noise predictions
+    
+    Launches the necessary predictions over `model` to collect the data
+    to generate the `combined noise` plot.
+    
+    Parameters
+    ----------
+    model : TensorFlow Keras Sequential
+        The trained model.
+    X_test : ndarray
+        Testing data set.
+    y_test : ndarray
+        Testing data set labels.
+    samples : int, optional (default: 100)
+        Number of bayesian passes to perform.
+    
+    Returns
+    -------
+    avg_H : ndarray
+        List of the averages of the global uncertainty (H) of each
+        class. The last position also contains the average of the
+        entire image.
+    """
     
     # Bayesian stochastic passes
     predictions = bayesian_predictions(model, X_test, samples=samples)
@@ -79,10 +110,23 @@ def noise_predict(model, X_test, y_test, samples=100):
     
     return avg_H
 
-# MAIN
+# MAIN FUNCTION
 # =============================================================================
 
-def main(epochs, epoch):
+def test_noise(epochs, epoch):
+    """Generates the `combined noise` plot of the trained models
+    
+    The plot is saved in the `TEST_DIR` defined in `config.py`.
+    
+    Parameters
+    ----------
+    epochs : list of ints
+        List of the number of trained epochs of each model. The order
+        must correspond to: BO, IP, KSC, PU and SV.
+    epoch : list of ints
+        List of the epoch of the selected checkpoint for testing each
+        model. The order must correspond to: BO, IP, KSC, PU and SV.
+    """
     
     # CONFIGURATION MACROS (extracted here as variables just for code clarity)
     # -------------------------------------------------------------------------
@@ -103,6 +147,9 @@ def main(epochs, epoch):
     p_train = config.P_TRAIN
     learning_rate = config.LEARNING_RATE
     
+    # Noise testing parameters
+    noises = config.NOISES
+    
     # Bayesian passes
     passes = config.BAYESIAN_PASSES
     
@@ -113,7 +160,6 @@ def main(epochs, epoch):
     
     # Plotting variables
     data = {}
-    noises = np.arange(0.0, 0.61, 0.01)
     
     # FOR EVERY DATASET
     # -------------------------------------------------------------------------
@@ -190,7 +236,11 @@ def main(epochs, epoch):
     plot_combined_noise(output_dir, noises, data, w, h, colours)
 
 if __name__ == "__main__":
+    
+    # Parse args
     args = parse_args()
+    
+    # Generate parameter structures for main function
     if args.epoch is None:
         args.epoch = args.epochs
     epochs = {}
@@ -198,5 +248,6 @@ if __name__ == "__main__":
     for i, name in enumerate(config.DATASETS_LIST):
         epochs[name] = args.epochs[i]
         epoch[name] = args.epoch[i]
-    main(epochs, epoch)
-
+    
+    # Launch main function
+    test_noise(epochs, epoch)
