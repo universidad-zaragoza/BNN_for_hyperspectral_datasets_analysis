@@ -54,11 +54,16 @@ os.environ['CUDA_VISIBLE_DEVICES'] = ''
 # PARAMETERS
 # =============================================================================
 
-def parse_args():
+def parse_args(dataset_list):
     """Analyses the received parameters and returns them organised.
     
     Takes the list of strings received at sys.argv and generates a
     namespace assigning them to objects.
+    
+    Parameters
+    ----------
+    dataset_list : list of str
+        List with the abbreviated names of the trained datasets.
     
     Returns
     -------
@@ -73,15 +78,12 @@ def parse_args():
     
     # Add arguments
     parser.add_argument("name",
-                        choices=["BO", "IP", "KSC", "PU", "SV"],
+                        choices=dataset_list,
                         help="Abbreviated name of the dataset.")
-    parser.add_argument("epochs",
+    parser.add_argument("epoch",
                         type=int,
-                        help="Trained epochs.")
-    parser.add_argument('-e', '--epoch',
-                        type=int,
-                        help=("Selected checkpoint for testing. By default "
-                              "uses `epochs` value."))
+                        help=("Number of trained epochs of the selected "
+                              "checkpoint for testing."))
     
     # Return the analysed parameters
     return parser.parse_args()
@@ -121,7 +123,7 @@ def map_predict(model, X, samples=100):
 # MAIN FUNCTION
 # =============================================================================
 
-def test_map(name, epochs, epoch):
+def test_map(name, epoch):
     """Generates the `uncertainty map` of the trained bayesian model
     
     The final image is saved in the `TEST_DIR` defined in `config.py`.
@@ -130,10 +132,8 @@ def test_map(name, epochs, epoch):
     ----------
     name : str
         Abbreviated name of the dataset.
-    epochs : int
-        Number of trained epochs.
-    epoch : list of ints
-        Selected checkpoint for testing.
+    epoch : int
+        Number of epochs of the selected checkpoint for testing.
     """
     
     # CONFIGURATION (extracted here as variables just for code clarity)
@@ -171,9 +171,8 @@ def test_map(name, epochs, epoch):
     num_classes = dataset['num_classes']
     
     # Get model dir
-    model_str = "{}-{}model".format(l1_n, l2_n,)
-    model_dir = "{}_{}_{}train_{}ep_{}lr/epoch_{}".format(
-                    name, model_str, p_train, epochs, learning_rate, epoch)
+    model_dir = "{}_{}-{}model_{}train_{}lr/epoch_{}".format(
+                    name, l1_n, l2_n, p_train, learning_rate, epoch)
     model_dir = os.path.join(base_dir, model_dir)
     
     # Print dataset name and model dir
@@ -227,11 +226,8 @@ def test_map(name, epochs, epoch):
 if __name__ == "__main__":
     
     # Parse args
-    args = parse_args()
-    
-    # Fill `epoch` argument if not received
-    if args.epoch is None:
-        args.epoch = args.epochs
+    dataset_list = config.DATASETS_LIST
+    args = parse_args(dataset_list)
     
     # Launch main function
-    test_map(args.name, args.epochs, args.epoch)
+    test_map(args.name, args.epoch)

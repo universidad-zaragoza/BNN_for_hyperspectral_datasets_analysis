@@ -313,7 +313,7 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
     It saves the plot in `output_dir` in pdf format with the name
     `<NAME>_<EPOCH>_class_uncertainty.pdf`, where <NAME> is the
     abbreviation of the dataset name and <EPOCH> the number of trained
-    epochs.
+    epochs of the tested checkpoint.
     
     Parameters
     ----------
@@ -323,7 +323,7 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
     name : str
         The abbreviation of the dataset name.
     epoch : int
-        The number of trained epochs.
+        The number of trained epochs of the tested checkpoint.
     avg_Ep : ndarray
         List of the averages of the aleatoric uncertainty (Ep) of each
         class. The last position also contains the average of the
@@ -628,7 +628,7 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
     It saves the plot in `output_dir` in pdf format with the name
     `<NAME>_<EPOCH>_mixed_classes.pdf`, where <NAME> is the
     abbreviation of the dataset name and <EPOCH> the number of trained
-    epochs.
+    epochs of the tested checkpoint.
     
     Parameters
     ----------
@@ -638,7 +638,7 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
     name : str
         The abbreviation of the dataset name.
     epoch : int
-        The number of trained epochs.
+        The number of trained epochs of the tested checkpoint.
     data : list of lists
         Contains one list for the normal model predictions with the
         aleatoric uncertainty (Ep) values of the mixed classes and the

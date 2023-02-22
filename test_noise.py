@@ -50,11 +50,18 @@ os.environ['CUDA_VISIBLE_DEVICES'] = ''
 # PARAMETERS
 # =============================================================================
 
-def parse_args():
+def parse_args(dataset_list):
     """Analyses the received parameters and returns them organised.
     
     Takes the list of strings received at sys.argv and generates a
     namespace assigning them to objects.
+    
+    Parameters
+    ----------
+    dataset_list : list of str
+        List with the abbreviated names of the datasets to test. If
+        `test_noise.py` is launched as a script, the received
+        parameters must correspond to the order of this list.
     
     Returns
     -------
@@ -70,17 +77,10 @@ def parse_args():
     # Add arguments
     parser.add_argument("epochs",
                         type=int,
-                        nargs=5,
-                        help=("List of the number of trained epochs of each "
-                              "model. The order must correspond to: BO, IP, "
-                              "KSC, PU and SV."))
-    parser.add_argument('-e', '--epoch',
-                        type=int,
-                        nargs=5,
+                        nargs=len(dataset_list),
                         help=("List of the epoch of the selected checkpoint "
                               "for testing each model. The order must "
-                              "correspond to: BO, IP, KSC, PU and SV. By "
-                              "default it uses `epochs` value."))
+                              "correspond to: {}.".format(dataset_list)))
     
     # Return the analysed parameters
     return parser.parse_args()
@@ -124,19 +124,17 @@ def noise_predict(model, X_test, y_test, samples=100):
 # MAIN FUNCTION
 # =============================================================================
 
-def test_noise(epochs, epoch):
+def test_noise(epochs):
     """Generates the `combined noise` plot of the trained models
     
     The plot is saved in the `TEST_DIR` defined in `config.py`.
     
     Parameters
     ----------
-    epochs : list of ints
-        List of the number of trained epochs of each model. The order
-        must correspond to: BO, IP, KSC, PU and SV.
-    epoch : list of ints
-        List of the epoch of the selected checkpoint for testing each
-        model. The order must correspond to: BO, IP, KSC, PU and SV.
+    epochs : dict
+        Dict structure with the epochs of the selected checkpoint for
+        testing each model. The keys must correspond to the abbreviated
+        name of the dataset of each trained model.
     """
     
     # CONFIGURATION MACROS (extracted here as variables just for code clarity)
@@ -184,9 +182,8 @@ def test_noise(epochs, epoch):
         num_features = dataset['num_features']
         
         # Get model dir
-        model_dir = "{}_{}-{}model_{}train_{}ep_{}lr/epoch_{}".format(
-                        name, l1_n, l2_n, p_train, epochs[name],
-                        learning_rate, epoch[name])
+        model_dir = "{}_{}-{}model_{}train_{}lr/epoch_{}".format(
+                        name, l1_n, l2_n, p_train, learning_rate, epochs[name])
         model_dir = os.path.join(base_dir, model_dir)
         if not os.path.isdir(model_dir):
             data[name] = []
@@ -249,16 +246,13 @@ def test_noise(epochs, epoch):
 if __name__ == "__main__":
     
     # Parse args
-    args = parse_args()
+    dataset_list = config.DATASETS_LIST
+    args = parse_args(dataset_list)
     
     # Generate parameter structures for main function
-    if args.epoch is None:
-        args.epoch = args.epochs
     epochs = {}
-    epoch = {}
-    for i, name in enumerate(config.DATASETS_LIST):
+    for i, name in enumerate(dataset_list):
         epochs[name] = args.epochs[i]
-        epoch[name] = args.epoch[i]
     
     # Launch main function
-    test_noise(epochs, epoch)
+    test_noise(epochs)

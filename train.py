@@ -64,7 +64,10 @@ def parse_args():
                         help="Abbreviated name of the dataset.")
     parser.add_argument("epochs",
                         type=int,
-                        help="Total number of epochs.")
+                        help=("Total number of epochs to train. If the same "
+                              "model has already been trained for less epochs "
+                              "it will continue from the last checkpoint as a "
+                              "finetuning."))
     parser.add_argument("period",
                         type=int,
                         help="Checkpoints and information period.")
@@ -146,10 +149,13 @@ class PrintCallback(tf.keras.callbacks.Callback):
         if last:
             print("\n--- TRAIN END AT EPOCH {} ---".format(self.epoch))
             print("TRAINING TIME: {} seconds".format(time))
+            end = "\n"
         else:
-            print("CURRENT TIME: {} seconds".format(time))
+            print("\nCURRENT TIME: {} seconds".format(time))
+            end = ''
         print("Epoch loss ({}): {}".format(self.epoch, loss))
-        print("Accuracy: {}".format(logs.get('val_accuracy')), flush=True)
+        print("Accuracy: {}".format(logs.get('val_accuracy')), end=end,
+              flush=True)
     
     def on_train_begin(self, logs={}):
         """Called at the beginning of training
@@ -249,7 +255,7 @@ def train(name, epochs, period, mix_classes):
     name : str
         Abbreviated name of the dataset.
     epochs : int
-        Total number of epochs.
+        Total number of epochs to train.
     period : int
         Checkpoints and information period.
     mix_classes : bool, optional (default: False)
@@ -282,8 +288,8 @@ def train(name, epochs, period, mix_classes):
     num_features = dataset['num_features']
     
     # Generate output dir
-    output_dir = "{}_{}-{}model_{}train_{}ep_{}lr".format(
-                    name, l1_n, l2_n, p_train, epochs, learning_rate)
+    output_dir = "{}_{}-{}model_{}train_{}lr".format(name, l1_n, l2_n,
+                                                     p_train, learning_rate)
     if mix_classes:
         class_a = dataset['mixed_class_A']
         class_b = dataset['mixed_class_B']
@@ -291,10 +297,6 @@ def train(name, epochs, period, mix_classes):
     output_dir = os.path.join(base_output_dir, output_dir)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
-    
-    # Print dataset name and output dir
-    print("\n# {}\n##########\n".format(name))
-    print("OUTPUT DIR: {}\n".format(output_dir), flush=True)
     
     # GET DATA
     # -------------------------------------------------------------------------
@@ -331,9 +333,18 @@ def train(name, epochs, period, mix_classes):
     file = os.path.join(output_dir, "epoch_{epoch}")
     checkpoint = tf.keras.callbacks.ModelCheckpoint(filepath=file,
                                                     monitor='val_accuracy',
+                                                    verbose=1,
                                                     mode='max',
                                                     save_best_only=False,
                                                     period=period)
+    
+    # Print start training message
+    if mix_classes:
+        msg = "\n### Starting the {} mixed training on epoch {}"
+    else:
+        msg = "\n### Starting the {} training on epoch {}"
+    print(msg.format(name, initial_epoch))
+    print("OUTPUT DIR: {}".format(output_dir), flush=True)
     
     # Training
     model.fit(X_train,
