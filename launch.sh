@@ -30,7 +30,6 @@ fi
 
 # Make Logs and Test dirs if they don't exist
 mkdir -p Logs
-mkdir -p Test
 
 # Normal training
 ./train.py BO $BO_epochs $BO_log 2>\dev\null | tee Logs/BO_train_log.txt
