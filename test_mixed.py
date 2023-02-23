@@ -235,16 +235,18 @@ def test_mixed(epochs):
         output_str = base_str.format(name, avg_Ep[class_a], m_avg_Ep[class_a],
                                      avg_Ep[class_b], m_avg_Ep[class_b],
                                      avg_Ep[-1], m_avg_Ep[-1])
-        print(output_str, end='')
         table += output_str
         
         # Plot class uncertainty
+        print("\n# Generating {} `class uncertainty` plot".format(name))
         data = [[avg_Ep[class_a], avg_Ep[class_b], avg_Ep[-1]],
                 [m_avg_Ep[class_a], m_avg_Ep[class_b], m_avg_Ep[-1]]]
         plot_mixed_uncertainty(output_dir, name, epochs[name], data, class_a,
                                class_b, w, h, colours)
     
     # Print table
+    print("\n### Mixed tests finished".format(name))
+    print('#'*80 + "\n")
     print(table, flush=True)
     
     # Save table

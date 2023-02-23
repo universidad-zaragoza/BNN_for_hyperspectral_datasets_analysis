@@ -250,7 +250,6 @@ def test_noise(epochs):
         # Add normalised average to data structure
         max_H = np.log(num_classes)
         data[name] = noise_data[-1]/max_H
-        print("{}\t{}".format(name, data[name]))
     
     # Plot combined noise
     plot_combined_noise(output_dir, noises, data, w, h, colours)
