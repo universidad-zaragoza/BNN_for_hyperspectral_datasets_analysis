@@ -109,6 +109,7 @@ def predict(model, X_test, y_test, samples=100):
     """
     
     # Bayesian stochastic passes
+    print("\nLaunching {} bayesian predictions".format(samples))
     predictions = bayesian_predictions(model, X_test, samples=samples)
     
     # Analyse entropy
@@ -167,7 +168,6 @@ def test_mixed(epochs):
     table += "         --------------    --------------    --------------\n"
     table += "Image    Ep    Ep mixed    Ep    Ep mixed    EP    EP mixed\n"
     base_str = "{:>5}{:>7.2f}{:>9.2f}{:>9.2f}{:>9.2f}{:>9.2f}{:>9.2f}\n"
-    print(table, end='')
     
     # FOR EVERY DATASET
     # -------------------------------------------------------------------------
@@ -214,10 +214,18 @@ def test_mixed(epochs):
         # LAUNCH PREDICTIONS
         # ---------------------------------------------------------------------
         
+        # Mixed tests message
+        print("\n### Starting {} mixed test".format(name))
+        print('#'*80)
+        print("\nMODEL DIR: {}".format(model_dir))
+        print("MIXED MODEL DIR: {}".format(mixed_model_dir))
+        
         # Launch predictions
+        print("\n# Normal prediction")
         avg_Ep = predict(model, X_test, y_test, samples=passes)
         
         # Launch mixed predictions
+        print("\n# Mixed classes prediction")
         m_avg_Ep = predict(mixed_model, m_X_test, m_y_test, samples=passes)
         
         # TABLE AND PLOT
@@ -235,6 +243,9 @@ def test_mixed(epochs):
                 [m_avg_Ep[class_a], m_avg_Ep[class_b], m_avg_Ep[-1]]]
         plot_mixed_uncertainty(output_dir, name, epochs[name], data, class_a,
                                class_b, w, h, colours)
+    
+    # Print table
+    print(table, flush=True)
     
     # Save table
     output_file = os.path.join(output_dir, "mixed_classes.txt")

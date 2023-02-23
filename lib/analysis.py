@@ -298,7 +298,17 @@ def bayesian_predictions(model, X_test, samples=100):
     # Bayesian stochastic passes
     predictions = []
     for i in range(samples):
-        prediction = model.predict(X_test)
+        
+        # Progress bar
+        status = int(78*len(predictions)/samples)
+        print('[' + '='*(status) + ' '*(78 - status) + ']', end="\r",
+              flush=True)
+        
+        # Launch prediction
+        prediction = model.predict(X_test, verbose=0)
         predictions.append(prediction)
+    
+    # End of progress bar
+    print('[' + '='*78 + ']', flush=True)
     
     return np.array(predictions)

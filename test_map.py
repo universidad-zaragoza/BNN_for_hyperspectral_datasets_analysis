@@ -24,7 +24,6 @@ __license__ = "GPLv3"
 __credits__ = ["Adrián Alcolea", "Javier Resano"]
 
 import os
-import datetime
 import numpy as np
 import tensorflow as tf
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
@@ -115,6 +114,7 @@ def map_predict(model, X, samples=100):
     """
     
     # Bayesian stochastic passes
+    print("\nLaunching {} bayesian predictions".format(samples))
     predictions = bayesian_predictions(model, X, samples=samples)
     
     # Map prediction
@@ -175,10 +175,6 @@ def test_map(name, epoch):
                     name, l1_n, l2_n, p_train, learning_rate, epoch)
     model_dir = os.path.join(base_dir, model_dir)
     
-    # Print dataset name and model dir
-    print("\n# {}\n##########\n".format(name))
-    print("MODEL DIR: {}\n{}\n".format(model_dir, datetime.datetime.now()))
-    
     # GET DATA
     # -------------------------------------------------------------------------
     
@@ -193,6 +189,11 @@ def test_map(name, epoch):
     H_map_file = os.path.join(model_dir, "H_map.npy")
     if os.path.isfile(pred_map_file) and os.path.isfile(H_map_file):
         
+        # Load message
+        print("\n### Loading {} map tests".format(name))
+        print('#'*80)
+        print("\nMODEL DIR: {}".format(model_dir), flush=True)
+        
         # Load them
         pred_map = np.load(pred_map_file)
         H_map = np.load(H_map_file)
@@ -201,6 +202,11 @@ def test_map(name, epoch):
         
         # Load model parameters
         model = tf.keras.models.load_model(model_dir)
+        
+        # Map test message
+        print("\n### Starting {} map test".format(name))
+        print('#'*80)
+        print("\nMODEL DIR: {}".format(model_dir))
         
         # Launch predictions
         pred_map, H_map = map_predict(model, X, samples=passes)

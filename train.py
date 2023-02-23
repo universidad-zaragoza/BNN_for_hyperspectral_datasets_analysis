@@ -344,7 +344,8 @@ def train(name, epochs, period, mix_classes):
     else:
         msg = "\n### Starting the {} training on epoch {}"
     print(msg.format(name, initial_epoch))
-    print("OUTPUT DIR: {}".format(output_dir), flush=True)
+    print('#'*80)
+    print("\nOUTPUT DIR: {}".format(output_dir), flush=True)
     
     # Training
     model.fit(X_train,

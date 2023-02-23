@@ -91,11 +91,11 @@ def predict(model, X_test, y_test, samples=100):
     
     Launches the necessary predictions over `model` to collect the data
     to generate the `reliability diagram`, the `uncertainty vs accuracy
-    plot` and the `class uncertainty plot` of the model.
+    plot` and the `class uncertainty` plot of the model.
     
     To generate the `reliability diagram` the predictions are divided
     into groups according to their predicted probability. To generate
-    the `uncertainty vs accuracy plot` the predictions are divided into
+    the `uncertainty vs accuracy` plot the predictions are divided into
     groups according to their uncertainty value. For that, it uses the
     default number of groups defined in the `reliability_diagram` and
     the `accuracy_vs_uncertainty` functions of `analysis.py`.
@@ -132,15 +132,20 @@ def predict(model, X_test, y_test, samples=100):
     """
     
     # Bayesian stochastic passes
+    print("\nLaunching {} bayesian predictions".format(samples))
     predictions = bayesian_predictions(model, X_test, samples=samples)
     
     # Reliability Diagram
+    print("\nGenerating data for the `reliability diagram`", flush=True)
     rd_data = reliability_diagram(predictions, y_test)
     
     # Cross entropy and accuracy
+    print("\nGenerating data for the `accuracy vs uncertainty` plot",
+          flush=True)
     acc_data, px_data = accuracy_vs_uncertainty(predictions, y_test)
     
     # Analyse entropy
+    print("\nGenerating data for the `class uncertainty` plot", flush=True)
     _, avg_Ep, avg_H_Ep = analyse_entropy(predictions, y_test)
     
     return rd_data, acc_data, px_data, avg_Ep, avg_H_Ep
@@ -212,10 +217,6 @@ def test(epochs):
             px_data[name] = []
             continue
         
-        # Print dataset name and model dir
-        print("\n# {}\n##########\n".format(name))
-        print("MODEL DIR: {}\n".format(model_dir))
-        
         # GET DATA
         # ---------------------------------------------------------------------
         
@@ -230,6 +231,11 @@ def test(epochs):
         
         # LAUNCH PREDICTIONS
         # ---------------------------------------------------------------------
+        
+        # Tests message
+        print("\n### Starting {} tests".format(name))
+        print('#'*80)
+        print("\nMODEL DIR: {}".format(model_dir))
         
         # Launch predictions
         (reliability_data[name],
@@ -247,6 +253,10 @@ def test(epochs):
         plot_class_uncertainty(output_dir, name, epochs[name], avg_Ep,
                                avg_H_Ep, w, h, colours)
     
+    # End of tests message
+    print("\n### Tests finished")
+    print('#'*80, flush=True)
+        
     # GROUPED PLOTS
     # -------------------------------------------------------------------------
     

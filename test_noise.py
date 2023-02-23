@@ -114,6 +114,7 @@ def noise_predict(model, X_test, y_test, samples=100):
     """
     
     # Bayesian stochastic passes
+    print("\nLaunching {} bayesian predictions".format(samples))
     predictions = bayesian_predictions(model, X_test, samples=samples)
     
     # Analyse entropy
@@ -189,16 +190,17 @@ def test_noise(epochs):
             data[name] = []
             continue
         
-        # Print dataset name and model dir
-        print("\n# {}\n##########\n".format(name))
-        print("MODEL DIR: {}\n".format(model_dir), flush=True)
-        
         # GENERATE OR LOAD NOISY PREDICTIONS
         # ---------------------------------------------------------------------
         
         # If noisy predictions file already exists
         noise_file = os.path.join(model_dir, "test_noise.npy")
         if os.path.isfile(noise_file):
+            
+            # Load message
+            print("\n### Loading {} noise test".format(name))
+            print('#'*80)
+            print("\nMODEL DIR: {}".format(model_dir), flush=True)
             
             # Load it
             noise_data = np.load(noise_file)
@@ -222,9 +224,19 @@ def test_noise(epochs):
             # LAUNCH PREDICTIONS
             # -----------------------------------------------------------------
             
+            # Noise test message
+            print("\n### Starting {} noise test".format(name))
+            print('#'*80)
+            print("\nMODEL DIR: {}".format(model_dir))
+            
             # Launch predictions for every noisy dataset
             noise_data = [[] for i in range(num_classes + 1)]
-            for n_X_test in n_X_tests:
+            for n, n_X_test in enumerate(n_X_tests):
+                
+                # Test message
+                print("\n# Noise test {} of {}".format(n + 1, len(n_X_tests)))
+                
+                # Launch prediction
                 avg_H = noise_predict(model, n_X_test, n_y_test,
                                       samples=passes)
                 noise_data = np.append(noise_data, avg_H[np.newaxis].T, 1)

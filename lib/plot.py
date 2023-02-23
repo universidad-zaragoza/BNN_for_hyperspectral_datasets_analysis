@@ -193,8 +193,9 @@ def plot_reliability_diagram(output_dir, data, w, h, colours, num_groups=10):
     ax.legend(loc='upper center', ncol=3, bbox_to_anchor=(0.5, 1.2))
     
     # Save
-    plt.savefig(os.path.join(output_dir, "reliability_diagram.pdf"),
-                bbox_inches='tight')
+    file_name = "reliability_diagram.pdf"
+    plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
+    print("Saved {} in {}".format(file_name, output_dir), flush=True)
 
 def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
                                  H_limit=1.5, num_groups=15):
@@ -303,8 +304,9 @@ def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
                             bbox_to_anchor=(0.8698, 1.146)))
     
     # Save
-    plt.savefig(os.path.join(output_dir, "accuracy_vs_uncertainty.pdf"),
-                bbox_inches='tight')
+    file_name = "accuracy_vs_uncertainty.pdf"
+    plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
+    print("Saved {} in {}".format(file_name, output_dir), flush=True)
 
 def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
                            colours):
@@ -373,6 +375,7 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
     # Save
     file_name = "{}_{}_class_uncertainty.pdf".format(name, epoch)
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
+    print("Saved {} in {}".format(file_name, output_dir), flush=True)
 
 def plot_maps(output_dir, name, shape, num_classes, wl, img, y, pred_map,
               H_map, colours, gradients, max_H=1.5, slots=15):
@@ -480,9 +483,13 @@ def plot_maps(output_dir, name, shape, num_classes, wl, img, y, pred_map,
     # PLOT COMBINED IMAGE
     # -------------------------------------------------------------------------
     
+    # Adjust layout between images
     plt.tight_layout(pad=0.5, w_pad=1.0, h_pad=1.0)
-    file = "H_{}.pdf".format(name)
-    plt.savefig(os.path.join(output_dir, file), bbox_inches='tight')
+    
+    # Save
+    file_name = "H_{}.pdf".format(name)
+    plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
+    print("Saved {} in {}".format(file_name, output_dir), flush=True)
 
 def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colours):
     """Generates and saves the `noise` plot of a dataset
@@ -558,8 +565,9 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colours):
     ax.legend(loc='upper center', ncol=3, bbox_to_anchor=(0.5, 1.2))
     
     # Save
-    plt.savefig(os.path.join(output_dir, "{}_noise.pdf".format(name)),
-                bbox_inches='tight')
+    file_name = "{}_noise.pdf".format(name)
+    plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
+    print("Saved {} in {}".format(file_name, output_dir), flush=True)
 
 def plot_combined_noise(output_dir, labels, data, w, h, colours):
     """Generates and saves the `combined noise` plot
@@ -618,8 +626,9 @@ def plot_combined_noise(output_dir, labels, data, w, h, colours):
     ax.legend(loc='upper center', ncol=5, bbox_to_anchor=(0.5, 1.2))
     
     # Save
-    plt.savefig(os.path.join(output_dir, "combined_noise.pdf".format(name)),
-                bbox_inches='tight')
+    file_name = "combined_noise.pdf"
+    plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
+    print("Saved {} in {}".format(file_name, output_dir), flush=True)
 
 def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
                            h, colours):
@@ -689,3 +698,4 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
     # Save
     file_name = "{}_{}_mixed_classes.pdf".format(name, epoch)
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
+    print("Saved {} in {}".format(file_name, output_dir), flush=True)
