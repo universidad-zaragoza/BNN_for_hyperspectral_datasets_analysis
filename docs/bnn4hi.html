@@ -81,7 +81,7 @@ doi = {10.1109/TGRS.2022.3205119} <br />
 
 <h2 id="how-to-run">How to run</h2>
 
-<h3 id="with-the-sh-script-in-linux">With the 'sh' script in linux</h3>
+<h3 id="with-the-sh-script">With the 'sh' script</h3>
 
 <blockquote>
   <p>./launch.sh</p>
@@ -91,7 +91,7 @@ doi = {10.1109/TGRS.2022.3205119} <br />
 
 <p>You must have python3 installed with the following libraries: numpy, matplotlib, spectral, scipy, scikit-learn, tensorflow and tensorflow_probability.</p>
 
-<h3 id="with-docker-in-linux">With docker in linux</h3>
+<h3 id="with-docker">With docker</h3>
 
 <blockquote>
   <p>docker build -t bnn4hi .</p>
@@ -115,59 +115,59 @@ doi = {10.1109/TGRS.2022.3205119} <br />
 
 <p>Will train the NAME dataset for EPOCHS epochs saving a checkpoint and writing information to stdout every PERIOD epochs.</p>
 
-<p>The resultant trained checkpoints will be in <em>Models/{NAME}_{LAYER1_NEURONS}-{LAYER2_NEURONS}model_{P_TRAIN}train_{EPOCHS}ep_{LEARNING_RATE}lr/</em>, organised with an <em>epoch_{EPOCH}</em> directory for each checkpoint.</p>
+<p>The resultant trained checkpoints will be in <em>Models/{NAME}_{LAYER1_NEURONS}-{LAYER2_NEURONS}model_{P_TRAIN}train_{LEARNING_RATE}lr/</em>, organised with an <em>epoch_{EPOCH}</em> directory for each checkpoint.</p>
 
 <p>Where LAYER1_NEURONS and LAYER2_NEURONS correspond to the number of neurons of the layers of the model, P_TRAIN corresponds to the percentage of pixels used for training and LEARNING_RATE corresponds to the initial learning rate. All of them are defined in <em>lib/config.py</em>. Also EPOCH corresponds to the current checkpoint epoch according to PERIOD.</p>
 
 <h3 id="test">Test</h3>
 
 <blockquote>
-  <p>./test.py BO_EPOCHS IP_EPOCHS KSC_EPOCHS PU_EPOCHS SV_EPOCHS -e BO_EPOCH IP_EPOCH KSC_EPOCH PU_EPOCH SV_EPOCH</p>
+  <p>./test.py BO_EPOCH IP_EPOCH KSC_EPOCH PU_EPOCH SV_EPOCH</p>
 </blockquote>
 
 <p>Will perform the necessary tests to generate the <em>reliability diagram</em> and the <em>accuracy vs. uncertainty</em> plots, along with the <em>class uncertainty</em> plot of each image. For that, it is necessary that the five dataset models are already trained. The plots will be saved in <em>Test/</em>.</p>
 
-<p>The five mandatory <em>epochs</em> parameters of <em>./test.py</em> correspond with the number of trained epochs of each model in this order: BO, IP, KSC, PU and SV. The optional parameter <em>-e</em> corresponds with the epoch (within the available checkpoints) that we want to test for each one of them. By default, if <em>-e</em> is not present, its value will be the mandatory <em>epochs</em> parameter of each model. Note that the mandatory parameters are necessary because the total number of trained epochs is part of the name of the directory containing the checkpoints of each dataset. Usually it will also be the selected model (as it is the one trained for more epochs), so the optional <em>-e</em> parameter will not be necessary, but sometimes it will not be the best one (due, for example, to overfitting), so we will want to select a particular checkpoint for each dataset with the <em>-e</em> parameter.</p>
+<p>The five mandatory <em>epoch</em> parameters of <em>./test.py</em> correspond with the number of epochs of the selected checkpoint for testing each model in this order: BO, IP, KSC, PU and SV. In case you want to eliminate or add datasets, take on account that this order must correspond with the <em>DATASETS_LIST</em> variable in <em>lib/config.py</em>.</p>
 
 <h3 id="test-map">Test map</h3>
 
 <p>Here we call the entire hyperspectral image a <em>map</em>, that is, every pixel on its original position to conform the image; and not only the labelled pixels, but the unlabelled too.</p>
 
 <blockquote>
-  <p>./test_map.py NAME EPOCHS -e EPOCH</p>
+  <p>./test_map.py NAME EPOCH</p>
 </blockquote>
 
-<p>Will perform the inference of every pixel of the NAME dataset and generate a pdf image called <em>H_NAME.pdf</em> containing the RGB image, the ground truth, the prediction (with a different colour for each class) and the uncertainty map (with a different colour for each range of uncertainty). The images will be saved in <em>Test/</em>.</p>
+<p>Will perform the inference of every pixel of the NAME dataset and generate a pdf image called <em>H_{NAME}.pdf</em> containing the RGB image, the ground truth, the prediction (with a different colour for each class) and the uncertainty map (with a different colour for each range of uncertainty). The images will be saved in <em>Test/</em>.</p>
 
-<p>As in <em>test.py</em>, EPOCHS refers to the number of epochs trained and the optional <em>-e</em> parameter, EPOCH, to the specific epoch that we want to test from the different checkpoints.</p>
+<p>As in <em>test.py</em>, EPOCH refers to the number of epochs of the selected checkpoint.</p>
 
 <h3 id="test-with-noisy-data">Test with noisy data</h3>
 
 <blockquote>
-  <p>./test_noise.py BO_EPOCHS IP_EPOCHS KSC_EPOCHS PU_EPOCHS SV_EPOCHS -e BO_EPOCH IP_EPOCH KSC_EPOCH PU_EPOCH SV_EPOCH</p>
+  <p>./test_noise.py BO_EPOCHS IP_EPOCHS KSC_EPOCHS PU_EPOCHS SV_EPOCHS</p>
 </blockquote>
 
 <p>Will perform the necessary tests to generate the <em>combined noise</em> plot. For that, it is necessary that the five dataset models are already trained. The plots will be saved in <em>Test/</em>.</p>
 
-<p>The parameters are the same of <em>train.py</em> and they behave the same way.</p>
+<p>The parameters are the same of <em>test.py</em> and they behave the same way.</p>
 
 <h3 id="train-with-mixed-classes">Train with mixed classes</h3>
 
 <p>The exact same execution of <em>train.py</em> activating the <em>-m</em> flag will generate the trained model with mixed classes.</p>
 
-<p>The resultant trained checkpoints will be in <em>Models/{NAME}_{LAYER1_NEURONS}-{LAYER2_NEURONS}model_{P_TRAIN}train_{EPOCHS}ep_{LEARNING_RATE}lr_{CLASS_A}-{CLASS_B}mixed/</em> with an <em>epoch_{EPOCH}</em> directory for each checkpoint.</p>
+<p>The resultant trained checkpoints will be in <em>Models/{NAME}_{LAYER1_NEURONS}-{LAYER2_NEURONS}model_{P_TRAIN}train_{LEARNING_RATE}lr_{CLASS_A}-{CLASS_B}mixed/</em> with an <em>epoch_{EPOCH}</em> directory for each checkpoint.</p>
 
 <p>Where CLASS_A and CLASS_B correspond to the numbers of the mixed classes, which are defined for each dataset in <em>lib/config.py</em>.</p>
 
 <h3 id="test-models-with-mixed-classes">Test models with mixed classes</h3>
 
 <blockquote>
-  <p>./test_mixed.py BO_EPOCHS IP_EPOCHS KSC_EPOCHS PU_EPOCHS SV_EPOCHS -e BO_EPOCH IP_EPOCH KSC_EPOCH PU_EPOCH SV_EPOCH</p>
+  <p>./test_mixed.py BO_EPOCHS IP_EPOCHS KSC_EPOCHS PU_EPOCHS SV_EPOCHS</p>
 </blockquote>
 
 <p>Will perform the necessary tests to generate and print a table with the <em>aleatoric uncertainty</em> of the mixed classes and the <em>mixed classes</em> plot of each model. For that, it is necessary that the five dataset models are already trained. The results will be saved in <em>Test/</em>.</p>
 
-<p>The parameters are the same of <em>train.py</em> and they behave the same way.</p>
+<p>The parameters are the same of <em>test.py</em> and they behave the same way.</p>
 </div>
 
                         <input id="mod-bnn4hi-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -177,6 +177,11 @@ doi = {10.1109/TGRS.2022.3205119} <br />
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">2</span></a><span class="sd">.. include:: README.md</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a><span class="kn">from</span> <span class="nn">.train</span> <span class="kn">import</span> <span class="n">train</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a><span class="kn">from</span> <span class="nn">.test</span> <span class="kn">import</span> <span class="n">test</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">6</span></a><span class="kn">from</span> <span class="nn">.test_map</span> <span class="kn">import</span> <span class="n">test_map</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">7</span></a><span class="kn">from</span> <span class="nn">.test_noise</span> <span class="kn">import</span> <span class="n">test_noise</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">8</span></a><span class="kn">from</span> <span class="nn">.test_mixed</span> <span class="kn">import</span> <span class="n">test_mixed</span>
 </span></pre></div>
 
 
