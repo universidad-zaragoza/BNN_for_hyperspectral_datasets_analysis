@@ -95,6 +95,8 @@ class PrintCallback(tf.keras.callbacks.Callback):
     losses_avg_no : int
         The current loss value is calculated as the average of the last
         `losses_avg_no` batches loss values.
+    start_epoch : int
+        Number of the initial epoch in case of finetuning.
     
     Methods
     -------
@@ -115,7 +117,7 @@ class PrintCallback(tf.keras.callbacks.Callback):
         message.
     """
     
-    def __init__(self, print_epoch=1000, losses_avg_no=100):
+    def __init__(self, print_epoch=1000, losses_avg_no=100, start_epoch=0):
         """Inits PrintCallback instance
         
         Parameters
@@ -125,9 +127,12 @@ class PrintCallback(tf.keras.callbacks.Callback):
         losses_avg_no : int, optional (default: 100)
             The current loss value is calculated as the average of the
             last `losses_avg_no` batches loss values.
+        start_epoch : int, optional (default: 0)
+            Number of the initial epoch in case of finetuning.
         """
         self.print_epoch = print_epoch
         self.losses_avg_no = losses_avg_no
+        self.start_epoch = start_epoch
     
     def print_loss_acc(self, logs, time, last=False):
         """Prints log messages with time, loss and accuracy values
@@ -171,7 +176,7 @@ class PrintCallback(tf.keras.callbacks.Callback):
             method but that may change in the future.
         """
         self.losses = []
-        self.epoch = 0
+        self.epoch = self.start_epoch
         self.start_time = time.time()
     
     def on_batch_end(self, batch, logs={}):
@@ -327,7 +332,9 @@ def train(name, epochs, period, mix_classes):
                           learning_rate)
     
     # PRINT CALLBACK
-    print_callback = PrintCallback(period, max(1, period//10))
+    print_callback = PrintCallback(print_epoch=period,
+                                   losses_avg_no=max(1, period//10),
+                                   start_epoch=initial_epoch)
     
     # CHECKPOINT CALLBACK
     file = os.path.join(output_dir, "epoch_{epoch}")
