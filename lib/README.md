@@ -8,15 +8,13 @@ This library contains the internal modules of bnn4hi package.
 
 *Config module of the bnn4hi package*
 
-This module provides macros with data information, training and testing
-parameters and plotting configurations.
+This module provides macros with data information, training and testing parameters and plotting configurations.
 
 ### data.py
 
 *Data module of the bnn4hi package*
 
-The functions of this module are used to load, preprocess and organise
-data from hyperspectral datasets.
+The functions of this module are used to load, preprocess and organise data from hyperspectral datasets.
 
 ### model.py
 
@@ -28,15 +26,13 @@ This module defines the bayesian model used to train.
 
 *Analysis module of the bnn4hi package*
 
-The functions of this module are used to generate and analyse bayesian
-predictions.
+The functions of this module are used to generate and analyse bayesian predictions.
 
 ### plot.py
 
 *Plot module of the bnn4hi package*
 
-The functions of this module are used to generate plots using the
-results of the analysed bayesian predictions.
+The functions of this module are used to generate plots using the results of the analysed bayesian predictions.
 
 ## HSI2RGB
 
