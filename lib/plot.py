@@ -25,7 +25,7 @@ from .HSI2RGB import HSI2RGB
 # MAP FUNCTIONS
 # =============================================================================
 
-def uncertainty_to_map(uncertainty, num_classes, slots=10, max_H=0):
+def _uncertainty_to_map(uncertainty, num_classes, slots=10, max_H=0):
     """Groups the uncertainty values received into uncertainty groups
     
     Parameters
@@ -74,7 +74,7 @@ def uncertainty_to_map(uncertainty, num_classes, slots=10, max_H=0):
     
     return u_map, labels
 
-def map_to_img(prediction, shape, colours, metric=None, th=0.0, bg=(0, 0, 0)):
+def _map_to_img(prediction, shape, colours, metric=None, th=0.0, bg=(0, 0, 0)):
     """Generates an RGB image from `prediction` and `colours`
     
     The prediction itself should represent the index of its
@@ -459,25 +459,25 @@ def plot_maps(output_dir, name, shape, num_classes, wl, img, y, pred_map,
     # -------------------------------------------------------------------------
     
     # Generate and show coloured ground truth
-    gt = map_to_img(y, shape, [(0, 0, 0)] + colours[:num_classes])
+    gt = _map_to_img(y, shape, [(0, 0, 0)] + colours[:num_classes])
     ax2.imshow(gt)
     
     # PREDICTION MAP GENERATION
     # -------------------------------------------------------------------------
     
     # Generate and show coloured prediction map
-    pred_H_img = map_to_img(pred_map, shape, colours[:num_classes])
+    pred_H_img = _map_to_img(pred_map, shape, colours[:num_classes])
     ax3.imshow(pred_H_img)
     
     # UNCERTAINTY MAP GENERATION
     # -------------------------------------------------------------------------
     
     # Create uncertainty map
-    u_map, labels = uncertainty_to_map(H_map, num_classes, slots=slots,
-                                       max_H=max_H)
+    u_map, labels = _uncertainty_to_map(H_map, num_classes, slots=slots,
+                                        max_H=max_H)
     
     # Generate and show coloured uncertainty map
-    H_img = map_to_img(u_map, shape, gradients[:slots])
+    H_img = _map_to_img(u_map, shape, gradients[:slots])
     ax4.imshow(H_img)
     
     # PLOT COMBINED IMAGE

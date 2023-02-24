@@ -6,8 +6,9 @@
 This module contains the main function to train a bayesian model for a
 hyperspectral image dataset.
 
-This module is prepared to be launched from command line, as a script,
-but it can also be imported as a module from the bnn4hi package.
+This module can be imported as a part of the bnn4hi package, but it can
+also be launched from command line, as a script. For that, use the `-h`
+option to see the required arguments.
 """
 
 __version__ = "1.0.0"
@@ -41,7 +42,7 @@ else:
 # PARAMETERS
 # =============================================================================
 
-def parse_args():
+def _parse_args():
     """Analyses the received parameters and returns them organised.
     
     Takes the list of strings received at sys.argv and generates a
@@ -81,7 +82,7 @@ def parse_args():
 # PRINT CALLBACK FUNCTION
 # =============================================================================
 
-class PrintCallback(tf.keras.callbacks.Callback):
+class _PrintCallback(tf.keras.callbacks.Callback):
     """Callback to print time, loss and accuracy logs during training
     
     Callbacks can be passed to keras methods such as `fit`, `evaluate`,
@@ -332,9 +333,9 @@ def train(name, epochs, period, mix_classes):
                           learning_rate)
     
     # PRINT CALLBACK
-    print_callback = PrintCallback(print_epoch=period,
-                                   losses_avg_no=max(1, period//10),
-                                   start_epoch=initial_epoch)
+    print_callback = _PrintCallback(print_epoch=period,
+                                    losses_avg_no=max(1, period//10),
+                                    start_epoch=initial_epoch)
     
     # CHECKPOINT CALLBACK
     file = os.path.join(output_dir, "epoch_{epoch}")
@@ -371,7 +372,7 @@ def train(name, epochs, period, mix_classes):
 if __name__ == "__main__":
     
     # Parse args
-    args = parse_args()
+    args = _parse_args()
     
     # Launch main function
     train(args.name, args.epochs, args.period, args.mix_classes)

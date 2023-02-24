@@ -12,8 +12,9 @@ intended to show the relationship between those images and the
 importance of the information that can be extracted analysing the
 uncertainty.
 
-This module is prepared to be launched from command line, as a script,
-but it can also be imported as a module from the bnn4hi package.
+This module can be imported as a part of the bnn4hi package, but it can
+also be launched from command line, as a script. For that, use the `-h`
+option to see the required arguments.
 """
 
 __version__ = "1.0.0"
@@ -53,7 +54,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = ''
 # PARAMETERS
 # =============================================================================
 
-def parse_args(dataset_list):
+def _parse_args(dataset_list):
     """Analyses the received parameters and returns them organised.
     
     Takes the list of strings received at sys.argv and generates a
@@ -233,7 +234,7 @@ if __name__ == "__main__":
     
     # Parse args
     dataset_list = config.DATASETS_LIST
-    args = parse_args(dataset_list)
+    args = _parse_args(dataset_list)
     
     # Launch main function
     test_map(args.name, args.epoch)
