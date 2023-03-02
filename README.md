@@ -2,7 +2,7 @@
 
 This repository contains python code to train bayesian neural networks for some of the most widely used open hyperspectral imaging datasets and to analyse the results.
 
-We will refer to the repository as `bnn4hi`. To clone it, it is recommended to change the folder destination, especially to use it as a module with the import clause:
+We will refer to the repository as `bnn4hi`. To clone it, it is recommended to change the folder destination, especially to use it as a module, with the import clause:
 
 > git clone https://github.com/universidad-zaragoza/BNN_for_hyperspectral_datasets_analysis.git bnn4hi
 
@@ -21,6 +21,8 @@ doi = {10.1109/TGRS.2022.3205119}
 }
 
 ## How to run
+
+Note that the entire execution of the *launch* script may take more than 24 hours. That includes training the models for 100 epochs (which should be fast), launching all the tests (the *map* and *noise* tests will take the longest), and then training again for 100 epochs with mixed classes and launching the *mixed* test. In case that everything works fine, training for thousands of epochs may last even longer (and it will be necessary to repeat all the tests).
 
 ### With the 'sh' script
 
