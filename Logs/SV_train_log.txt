@@ -1,0 +1,60 @@
+
+### Starting the SV training on epoch 0
+################################################################################
+
+OUTPUT DIR: ./Models/SV_32-16model_0.5train_0.01lr
+
+CURRENT TIME: 8.49412751197815 seconds
+Epoch loss (10): 0.4460738003253937
+Accuracy: None
+Epoch 10: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_10
+
+CURRENT TIME: 17.73551654815674 seconds
+Epoch loss (20): 0.39377298951148987
+Accuracy: None
+Epoch 20: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_20
+
+CURRENT TIME: 27.428473711013794 seconds
+Epoch loss (30): 0.39344286918640137
+Accuracy: None
+Epoch 30: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_30
+
+CURRENT TIME: 36.78095054626465 seconds
+Epoch loss (40): 0.3733889162540436
+Accuracy: None
+Epoch 40: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_40
+
+CURRENT TIME: 46.38325881958008 seconds
+Epoch loss (50): 0.41620928049087524
+Accuracy: 0.9176209568977356
+Epoch 50: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_50
+
+CURRENT TIME: 55.85537028312683 seconds
+Epoch loss (60): 0.3568710386753082
+Accuracy: None
+Epoch 60: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_60
+
+CURRENT TIME: 65.34015226364136 seconds
+Epoch loss (70): 0.4126172363758087
+Accuracy: None
+Epoch 70: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_70
+
+CURRENT TIME: 75.20613360404968 seconds
+Epoch loss (80): 0.38064366579055786
+Accuracy: None
+Epoch 80: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_80
+
+CURRENT TIME: 84.8144383430481 seconds
+Epoch loss (90): 0.4011925756931305
+Accuracy: None
+Epoch 90: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_90
+
+CURRENT TIME: 94.66067171096802 seconds
+Epoch loss (100): 0.38448283076286316
+Accuracy: 0.9142962694168091
+Epoch 100: saving model to ./Models/SV_32-16model_0.5train_0.01lr/epoch_100
+
+--- TRAIN END AT EPOCH 100 ---
+TRAINING TIME: 96.72505021095276 seconds
+Epoch loss (100): 0.38448283076286316
+Accuracy: 0.9142962694168091

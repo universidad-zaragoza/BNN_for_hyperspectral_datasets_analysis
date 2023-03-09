@@ -3,8 +3,8 @@
 
 """Training module of the bnn4hi package
 
-This module contains the main function to train a bayesian model for a
-hyperspectral image dataset.
+This module contains the main function to train a bayesian neural
+network model for a hyperspectral image dataset.
 
 This module can be imported as a part of the bnn4hi package, but it can
 also be launched from command line, as a script. For that, use the `-h`

@@ -1,0 +1,60 @@
+
+### Starting the BO training on epoch 0
+################################################################################
+
+OUTPUT DIR: ./Models/BO_32-16model_0.5train_0.01lr
+
+CURRENT TIME: 1.4487788677215576 seconds
+Epoch loss (10): 2.2708706855773926
+Accuracy: None
+Epoch 10: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_10
+
+CURRENT TIME: 3.481396436691284 seconds
+Epoch loss (20): 1.580423355102539
+Accuracy: None
+Epoch 20: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_20
+
+CURRENT TIME: 5.8695642948150635 seconds
+Epoch loss (30): 1.3246102333068848
+Accuracy: None
+Epoch 30: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_30
+
+CURRENT TIME: 7.989937782287598 seconds
+Epoch loss (40): 1.1412312984466553
+Accuracy: None
+Epoch 40: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_40
+
+CURRENT TIME: 10.27254319190979 seconds
+Epoch loss (50): 1.1111400127410889
+Accuracy: 0.8588957190513611
+Epoch 50: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_50
+
+CURRENT TIME: 12.514049530029297 seconds
+Epoch loss (60): 1.0553226470947266
+Accuracy: None
+Epoch 60: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_60
+
+CURRENT TIME: 14.84413456916809 seconds
+Epoch loss (70): 0.9804993867874146
+Accuracy: None
+Epoch 70: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_70
+
+CURRENT TIME: 17.411442756652832 seconds
+Epoch loss (80): 0.9383901953697205
+Accuracy: None
+Epoch 80: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_80
+
+CURRENT TIME: 19.825767993927002 seconds
+Epoch loss (90): 0.9102786779403687
+Accuracy: None
+Epoch 90: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_90
+
+CURRENT TIME: 22.355852603912354 seconds
+Epoch loss (100): 1.048776626586914
+Accuracy: 0.7975460290908813
+Epoch 100: saving model to ./Models/BO_32-16model_0.5train_0.01lr/epoch_100
+
+--- TRAIN END AT EPOCH 100 ---
+TRAINING TIME: 24.44184446334839 seconds
+Epoch loss (100): 1.048776626586914
+Accuracy: 0.7975460290908813

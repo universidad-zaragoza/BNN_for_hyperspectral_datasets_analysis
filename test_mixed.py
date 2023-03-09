@@ -185,7 +185,7 @@ def test_mixed(epochs):
                           f"_{learning_rate}lr")
         model_dir = os.path.join(base_model_dir, f"epoch_{epochs[name]}")
         model_dir = os.path.join(base_dir, model_dir)
-        mixed_model_dir = base_model_dir + "_{class_a}-{class_b}mixed")
+        mixed_model_dir = base_model_dir + f"_{class_a}-{class_b}mixed"
         mixed_model_dir = os.path.join(mixed_model_dir,
                                        f"epoch_{epochs[name]}")
         mixed_model_dir = os.path.join(base_dir, mixed_model_dir)

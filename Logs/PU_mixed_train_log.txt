@@ -1,0 +1,60 @@
+
+### Starting the PU mixed training on epoch 0
+################################################################################
+
+OUTPUT DIR: ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed
+
+CURRENT TIME: 6.268396377563477 seconds
+Epoch loss (10): 0.5213334560394287
+Accuracy: None
+Epoch 10: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_10
+
+CURRENT TIME: 13.297964572906494 seconds
+Epoch loss (20): 0.4791780412197113
+Accuracy: None
+Epoch 20: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_20
+
+CURRENT TIME: 20.699474811553955 seconds
+Epoch loss (30): 0.4434570372104645
+Accuracy: None
+Epoch 30: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_30
+
+CURRENT TIME: 27.7652747631073 seconds
+Epoch loss (40): 0.438934326171875
+Accuracy: None
+Epoch 40: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_40
+
+CURRENT TIME: 35.11028218269348 seconds
+Epoch loss (50): 0.4452437162399292
+Accuracy: 0.8578774929046631
+Epoch 50: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_50
+
+CURRENT TIME: 42.30965495109558 seconds
+Epoch loss (60): 0.44696375727653503
+Accuracy: None
+Epoch 60: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_60
+
+CURRENT TIME: 49.57330131530762 seconds
+Epoch loss (70): 0.4304641783237457
+Accuracy: None
+Epoch 70: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_70
+
+CURRENT TIME: 57.19380593299866 seconds
+Epoch loss (80): 0.41900813579559326
+Accuracy: None
+Epoch 80: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_80
+
+CURRENT TIME: 64.58886098861694 seconds
+Epoch loss (90): 0.43266618251800537
+Accuracy: None
+Epoch 90: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_90
+
+CURRENT TIME: 72.1203875541687 seconds
+Epoch loss (100): 0.4386568069458008
+Accuracy: 0.8676952123641968
+Epoch 100: saving model to ./Models/PU_32-16model_0.5train_0.01lr_3-7mixed/epoch_100
+
+--- TRAIN END AT EPOCH 100 ---
+TRAINING TIME: 74.20143532752991 seconds
+Epoch loss (100): 0.4386568069458008
+Accuracy: 0.8676952123641968
