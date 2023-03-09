@@ -153,15 +153,14 @@ class _PrintCallback(tf.keras.callbacks.Callback):
         
         # Print log message
         if last:
-            print("\n--- TRAIN END AT EPOCH {} ---".format(self.epoch))
-            print("TRAINING TIME: {} seconds".format(time))
+            print(f"\n--- TRAIN END AT EPOCH {self.epoch} ---")
+            print(f"TRAINING TIME: {time} seconds")
             end = "\n"
         else:
-            print("\nCURRENT TIME: {} seconds".format(time))
+            print(f"\nCURRENT TIME: {time} seconds")
             end = ''
-        print("Epoch loss ({}): {}".format(self.epoch, loss))
-        print("Accuracy: {}".format(logs.get('val_accuracy')), end=end,
-              flush=True)
+        print(f"Epoch loss ({self.epoch}): {loss}")
+        print(f"Accuracy: {logs.get('val_accuracy')}", end=end, flush=True)
     
     def on_train_begin(self, logs={}):
         """Called at the beginning of training
@@ -294,12 +293,11 @@ def train(name, epochs, period, mix_classes):
     num_features = dataset['num_features']
     
     # Generate output dir
-    output_dir = "{}_{}-{}model_{}train_{}lr".format(name, l1_n, l2_n,
-                                                     p_train, learning_rate)
+    output_dir = f"{name}_{l1_n}-{l2_n}model_{p_train}train_{learning_rate}lr"
     if mix_classes:
         class_a = dataset['mixed_class_A']
         class_b = dataset['mixed_class_B']
-        output_dir += "_{}-{}mixed".format(class_a, class_b)
+        output_dir += f"_{class_a}-{class_b}mixed"
     output_dir = os.path.join(base_output_dir, output_dir)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
@@ -310,11 +308,10 @@ def train(name, epochs, period, mix_classes):
     # Get dataset
     if mix_classes:
         (X_train, y_train,
-         X_test, y_test) = get_mixed_dataset(dataset, d_path, p_train,
-                                             class_a, class_b)
+         X_test, _) = get_mixed_dataset(dataset, d_path, p_train, class_a,
+                                        class_b)
     else:
-        (X_train, y_train,
-         X_test, y_test) = get_dataset(dataset, d_path, p_train)
+        X_train, y_train, X_test, _ = get_dataset(dataset, d_path, p_train)
     
     # TRAIN MODEL
     # -------------------------------------------------------------------------
@@ -324,7 +321,7 @@ def train(name, epochs, period, mix_classes):
                if "_" in d]
     if trained:
         initial_epoch = max(trained)
-        last_file = os.path.join(output_dir, "epoch_{}".format(initial_epoch))
+        last_file = os.path.join(output_dir, f"epoch_{initial_epoch}")
         model = tf.keras.models.load_model(last_file)
     else:
         initial_epoch = 0
@@ -353,7 +350,7 @@ def train(name, epochs, period, mix_classes):
         msg = "\n### Starting the {} training on epoch {}"
     print(msg.format(name, initial_epoch))
     print('#'*80)
-    print("\nOUTPUT DIR: {}".format(output_dir), flush=True)
+    print(f"\nOUTPUT DIR: {output_dir}", flush=True)
     
     # Training
     model.fit(X_train,
@@ -367,7 +364,7 @@ def train(name, epochs, period, mix_classes):
               validation_freq=25)
     
     # Save model
-    model.save("{}/final".format(output_dir))
+    model.save(os.path.join(output_dir, "final"))
 
 if __name__ == "__main__":
     

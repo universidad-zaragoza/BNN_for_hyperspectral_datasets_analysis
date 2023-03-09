@@ -91,7 +91,7 @@ def _expected_entropy(predictions):
                 class_sum += val * math.log(val)
             entropy[p] -= class_sum
     
-    return entropy / num_tests
+    return entropy/num_tests
 
 # ANALYSIS FUNCTIONS
 # =============================================================================
@@ -136,7 +136,7 @@ def reliability_diagram(predictions, y_test, num_groups=10):
         # Calculate the average of each group
         group = labels[(prediction >= p_groups[i]) &
                        (prediction < p_groups[i + 1])]
-        result.append(group.sum() / len(group))
+        result.append(group.sum()/len(group))
     
     return result
 

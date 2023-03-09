@@ -48,7 +48,7 @@ def get_model(dataset_size, num_features, num_classes, l1_n, l2_n,
     
     # Generate and compile model
     tf.keras.backend.clear_session()
-    kd_function = (lambda q, p, _: dist.kl_divergence(q, p) / dataset_size)
+    kd_function = (lambda q, p, _: dist.kl_divergence(q, p)/dataset_size)
     model = tf.keras.Sequential([
         tf.keras.Input(shape=(num_features,), name="input"),
         tfp.layers.DenseFlipout(l1_n, kernel_divergence_fn=kd_function,

@@ -115,7 +115,7 @@ def map_predict(model, X, samples=100):
     """
     
     # Bayesian stochastic passes
-    print("\nLaunching {} bayesian predictions".format(samples))
+    print(f"\nLaunching {samples} bayesian predictions")
     predictions = bayesian_predictions(model, X, samples=samples)
     
     # Map prediction
@@ -172,8 +172,8 @@ def test_map(name, epoch):
     num_classes = dataset['num_classes']
     
     # Get model dir
-    model_dir = "{}_{}-{}model_{}train_{}lr/epoch_{}".format(
-                    name, l1_n, l2_n, p_train, learning_rate, epoch)
+    model_dir = f"{name}_{l1_n}-{l2_n}model_{p_train}train_{learning_rate}lr"
+    model_dir = os.path.join(model_dir, f"epoch_{epoch}")
     model_dir = os.path.join(base_dir, model_dir)
     
     # GET DATA
@@ -191,9 +191,9 @@ def test_map(name, epoch):
     if os.path.isfile(pred_map_file) and os.path.isfile(H_map_file):
         
         # Load message
-        print("\n### Loading {} map tests".format(name))
+        print(f"\n### Loading {name} map tests")
         print('#'*80)
-        print("\nMODEL DIR: {}".format(model_dir), flush=True)
+        print(f"\nMODEL DIR: {model_dir}", flush=True)
         
         # Load them
         pred_map = np.load(pred_map_file)
@@ -205,9 +205,9 @@ def test_map(name, epoch):
         model = tf.keras.models.load_model(model_dir)
         
         # Map test message
-        print("\n### Starting {} map test".format(name))
+        print(f"\n### Starting {name} map test")
         print('#'*80)
-        print("\nMODEL DIR: {}".format(model_dir))
+        print(f"\nMODEL DIR: {model_dir}")
         
         # Launch predictions
         pred_map, H_map = map_predict(model, X, samples=passes)

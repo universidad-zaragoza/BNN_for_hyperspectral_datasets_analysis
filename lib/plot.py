@@ -57,7 +57,7 @@ def _uncertainty_to_map(uncertainty, num_classes, slots=10, max_H=0):
     # Prepare output structures and ranges
     u_map = np.zeros(uncertainty.shape, dtype="int")
     ranges = np.linspace(0.0, max_H, num=slots+1)
-    labels = ["0.0-{:.2f}".format(ranges[1])]
+    labels = [f"0.0-{ranges[1]:.2f}"]
     
     # Populate the output structures
     slot = 1
@@ -66,7 +66,7 @@ def _uncertainty_to_map(uncertainty, num_classes, slots=10, max_H=0):
         
         # Fill with the slot number and actualise labels
         u_map[(start <= uncertainty) & (uncertainty <= end)] = slot
-        labels.append("{:.2f}-{:.2f}".format(start, end))
+        labels.append(f"{start:.2f}-{end:.2f}")
         
         # For next iteration
         start = end
@@ -78,7 +78,7 @@ def _map_to_img(prediction, shape, colours, metric=None, th=0.0, bg=(0, 0, 0)):
     """Generates an RGB image from `prediction` and `colours`
     
     The prediction itself should represent the index of its
-    correspondent color.
+    correspondent colour.
     
     Parameters
     ----------
@@ -96,7 +96,7 @@ def _map_to_img(prediction, shape, colours, metric=None, th=0.0, bg=(0, 0, 0)):
     th : float, optional (Default: 0.0)
         Threshold value to compare with each `metric` value if defined.
     bg : RGB tuple, optional (Default: (0, 0, 0))
-        Background color used for the pixels not represented according
+        Background colour used for the pixels not represented according
         to `metric`.
     
     Returns
@@ -142,21 +142,21 @@ def plot_reliability_diagram(output_dir, data, w, h, colours, num_groups=10):
     h : int
         Height of the plot.
     colours : dict
-        It contains the HEX value of the RGB color of each dataset. The
-        key must be the dataset name abbreviation.
+        It contains the HEX value of the RGB colour of each dataset.
+        The key must be the dataset name abbreviation.
     num_groups : int, optional (default: 10)
         Number of groups to divide xticks labels.
     """
     
     # Generate x axis labels and data for the optimal calibration curve
     p_groups = np.linspace(0.0, 1.0, num_groups + 1)
-    center = (p_groups[1] - p_groups[0]) / 2
+    center = (p_groups[1] - p_groups[0])/2
     optimal = (p_groups + center)[:-1]
     if num_groups <= 10:
-        labels = ["{:.1f}-{:.1f}".format(p_groups[i], p_groups[i + 1])
+        labels = [f"{p_groups[i]:.1f}-{p_groups[i + 1]:.1f}"
                   for i in range(num_groups)]
     else:
-        labels = ["{:.2f}-{:.2f}".format(p_groups[i], p_groups[i + 1])
+        labels = [f"{p_groups[i]:.2f}-{p_groups[i + 1]:.2f}"
                   for i in range(num_groups)]
     
     # Xticks
@@ -195,7 +195,7 @@ def plot_reliability_diagram(output_dir, data, w, h, colours, num_groups=10):
     # Save
     file_name = "reliability_diagram.pdf"
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-    print("Saved {} in {}".format(file_name, output_dir), flush=True)
+    print(f"Saved {file_name} in {output_dir}", flush=True)
 
 def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
                                  H_limit=1.5, num_groups=15):
@@ -221,8 +221,8 @@ def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
     h : int
         Height of the plot.
     colours : dict
-        It contains the HEX value of the RGB color of each dataset. The
-        key must be the dataset name abbreviation.
+        It contains the HEX value of the RGB colour of each dataset.
+        The key must be the dataset name abbreviation.
     H_limit : float, optional (default: 1.5)
         The max value of the range of uncertainty for the plot.
     num_groups : int, optional (default: 15)
@@ -231,7 +231,7 @@ def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
     
     # Labels
     H_groups = np.linspace(0.0, H_limit, num_groups + 1)
-    labels = ["{:.2f}-{:.2f}".format(H_groups[i], H_groups[i + 1])
+    labels = [f"{H_groups[i]:.2f}-{H_groups[i + 1]:.2f}"
               for i in range(num_groups)]
     
     # Xticks
@@ -246,11 +246,10 @@ def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
     # Plots
     for img_name in colours.keys():
         ax.plot(xticks[:len(acc_data[img_name])], acc_data[img_name],
-                label="{} acc.".format(img_name), color=colours[img_name],
-                zorder=3)
+                label=f"{img_name} acc.", color=colours[img_name], zorder=3)
         ax.bar(xticks[:len(px_data[img_name])], px_data[img_name],
-               label="{} px %".format(img_name), color=colours[img_name],
-               alpha=0.18, zorder=2)
+               label=f"{img_name} px %", color=colours[img_name], alpha=0.18,
+               zorder=2)
         ax.bar(xticks[:len(px_data[img_name])],
                [-0.007 for i in px_data[img_name]], bottom=px_data[img_name],
                color=colours[img_name], zorder=3)
@@ -306,10 +305,10 @@ def plot_accuracy_vs_uncertainty(output_dir, acc_data, px_data, w, h, colours,
     # Save
     file_name = "accuracy_vs_uncertainty.pdf"
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-    print("Saved {} in {}".format(file_name, output_dir), flush=True)
+    print(f"Saved {file_name} in {output_dir}", flush=True)
 
 def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
-                           colours):
+                           colours=["#2B4162", "#FA9F42", "#0B6E4F"]):
     """Generates and saves the `class uncertainty` plot of a dataset
     
     It saves the plot in `output_dir` in pdf format with the name
@@ -338,9 +337,10 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
         Width of the plot.
     h : int
         Height of the plot.
-    colours : dict
-        It contains the HEX value of the RGB color of each dataset. The
-        key must be the dataset name abbreviation.
+    colours : list, optional
+        (default: ["#2B4162", "#FA9F42", "#0B6E4F"])
+        List with the str format of the HEX value of at least three RGB
+        colours.
     """
     
     # Xticks
@@ -350,16 +350,16 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
     fig, ax = plt.subplots(figsize=(w, h))
     
     # Plots
-    ax.bar(xticks, avg_Ep, label="Ep", color=colours["BO"], zorder=3)
+    ax.bar(xticks, avg_Ep, label="Ep", color=colours[0], zorder=3)
     ax.bar(xticks, avg_H_Ep, bottom=avg_Ep, label="H - Ep",
-           color=colours["KSC"], zorder=3)
+           color=colours[2], zorder=3)
     
     # Highlight avg border
     ax.bar(xticks[-1], avg_Ep[-1] + avg_H_Ep[-1], zorder=2,
-           edgecolor=colours["IP"], linewidth=4)
+           edgecolor=colours[1], linewidth=4)
     
     # Axes label
-    ax.set_xlabel("{} classes".format(name))
+    ax.set_xlabel(f"{name} classes")
     
     # X axis labels
     ax.set_xticks(xticks)
@@ -373,9 +373,9 @@ def plot_class_uncertainty(output_dir, name, epoch, avg_Ep, avg_H_Ep, w, h,
     ax.legend(loc='upper center', ncol=3, bbox_to_anchor=(0.5, 1.2))
     
     # Save
-    file_name = "{}_{}_class_uncertainty.pdf".format(name, epoch)
+    file_name = f"{name}_{epoch}_class_uncertainty.pdf"
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-    print("Saved {} in {}".format(file_name, output_dir), flush=True)
+    print(f"Saved {file_name} in {output_dir}", flush=True)
 
 def plot_maps(output_dir, name, shape, num_classes, wl, img, y, pred_map,
               H_map, colours, gradients, max_H=1.5, slots=15):
@@ -487,11 +487,12 @@ def plot_maps(output_dir, name, shape, num_classes, wl, img, y, pred_map,
     plt.tight_layout(pad=0.5, w_pad=1.0, h_pad=1.0)
     
     # Save
-    file_name = "H_{}.pdf".format(name)
+    file_name = f"H_{name}.pdf"
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-    print("Saved {} in {}".format(file_name, output_dir), flush=True)
+    print(f"Saved {file_name} in {output_dir}", flush=True)
 
-def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colours):
+def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h,
+                                colours=["#2B4162", "#FA9F42", "#0B6E4F"]):
     """Generates and saves the `noise` plot of a dataset
     
     It saves the plot in `output_dir` in pdf format with the name
@@ -515,9 +516,10 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colours):
         Width of the plot.
     h : int
         Height of the plot.
-    colours : dict
-        It contains the HEX value of the RGB color of each dataset. The
-        key must be the dataset name abbreviation.
+    colours : list, optional
+        (default: ["#2B4162", "#FA9F42", "#0B6E4F"])
+        List with the str format of the HEX value of at least three RGB
+        colours.
     """
     
     # Add the data for plotting the maximum uncertainty line
@@ -534,11 +536,11 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colours):
     #     Some of the colours of other plots are used here o it is no
     #     necessary to define different colours for this plot
     for n, d in enumerate(data[:-3]):
-        ax.plot(labels, d, color=colours["BO"])
-    ax.plot(labels, data[-3], color=colours["BO"], label="classes")
-    ax.plot(labels, data[-2], color=colours["IP"], label="avg",
+        ax.plot(labels, d, color=colours[0])
+    ax.plot(labels, data[-3], color=colours[0], label="classes")
+    ax.plot(labels, data[-2], color=colours[1], label="avg",
             linestyle='dashed')
-    ax.plot(labels, data[-1], color=colours["KSC"], label="max",
+    ax.plot(labels, data[-1], color=colours[2], label="max",
             linestyle='dashed')
     
     # Axes label
@@ -565,9 +567,9 @@ def plot_uncertainty_with_noise(output_dir, name, labels, data, w, h, colours):
     ax.legend(loc='upper center', ncol=3, bbox_to_anchor=(0.5, 1.2))
     
     # Save
-    file_name = "{}_noise.pdf".format(name)
+    file_name = f"{name}_noise.pdf"
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-    print("Saved {} in {}".format(file_name, output_dir), flush=True)
+    print(f"Saved {file_name} in {output_dir}", flush=True)
 
 def plot_combined_noise(output_dir, labels, data, w, h, colours):
     """Generates and saves the `combined noise` plot
@@ -591,8 +593,8 @@ def plot_combined_noise(output_dir, labels, data, w, h, colours):
     h : int
         Height of the plot.
     colours : dict
-        It contains the HEX value of the RGB color of each dataset. The
-        key must be the dataset name abbreviation.
+        It contains the HEX value of the RGB colour of each dataset.
+        The key must be the dataset name abbreviation.
     """
     
     # Labels and xticks
@@ -628,10 +630,10 @@ def plot_combined_noise(output_dir, labels, data, w, h, colours):
     # Save
     file_name = "combined_noise.pdf"
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-    print("Saved {} in {}".format(file_name, output_dir), flush=True)
+    print(f"Saved {file_name} in {output_dir}", flush=True)
 
 def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
-                           h, colours):
+                           h, colours=["#2B4162", "#D496A7"]):
     """Generates and saves the `mixed classes` plot of a dataset
     
     It saves the plot in `output_dir` in pdf format with the name
@@ -661,9 +663,10 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
         Width of the plot.
     h : int
         Height of the plot.
-    colours : dict
-        It contains the HEX value of the RGB color of each dataset. The
-        key must be the dataset name abbreviation.
+    colours : list, optional
+        (default: ["#2B4162", "#D496A7"])
+        List with the str format of the HEX value of at least two RGB
+        colours.
     """
     
     # Xticks
@@ -675,18 +678,17 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
     fig, ax = plt.subplots(figsize=(w, h))
     
     # Plots
-    ax.bar(xticks_0, data[0], label="Ep", color=colours["BO"], width=0.35,
+    ax.bar(xticks_0, data[0], label="Ep", color=colours[0], width=0.35,
            zorder=3)
-    ax.bar(xticks_1, data[1], label="Ep mixed", color=colours["SV"],
+    ax.bar(xticks_1, data[1], label="Ep mixed", color=colours[1],
            width=0.35, zorder=3)
     
     # Axes label
-    ax.set_xlabel("{} mixed classes".format(name))
+    ax.set_xlabel(f"{name} mixed classes")
     
     # X axis labels
     ax.set_xticks(xticks)
-    xlabels = ["class {}".format(class_a), "class {}".format(class_b),
-               "avg. (all classes)"]
+    xlabels = [f"class {class_a}", f"class {class_b}", "avg. (all classes)"]
     ax.set_xticklabels(xlabels)
     
     # Grid
@@ -696,6 +698,6 @@ def plot_mixed_uncertainty(output_dir, name, epoch, data, class_a, class_b, w,
     ax.legend(loc='upper center', ncol=3, bbox_to_anchor=(0.5, 1.2))
     
     # Save
-    file_name = "{}_{}_mixed_classes.pdf".format(name, epoch)
+    file_name = f"{name}_{epoch}_mixed_classes.pdf"
     plt.savefig(os.path.join(output_dir, file_name), bbox_inches='tight')
-    print("Saved {} in {}".format(file_name, output_dir), flush=True)
+    print(f"Saved {file_name} in {output_dir}", flush=True)

@@ -76,7 +76,7 @@ def _parse_args(dataset_list):
                         nargs=len(dataset_list),
                         help=("List of the epoch of the selected checkpoint "
                               "for testing each model. The order must "
-                              "correspond to: {}.".format(dataset_list)))
+                              f"correspond to: {dataset_list}."))
     
     # Return the analysed parameters
     return parser.parse_args()
@@ -110,7 +110,7 @@ def predict(model, X_test, y_test, samples=100):
     """
     
     # Bayesian stochastic passes
-    print("\nLaunching {} bayesian predictions".format(samples))
+    print(f"\nLaunching {samples} bayesian predictions")
     predictions = bayesian_predictions(model, X_test, samples=samples)
     
     # Analyse entropy
@@ -160,7 +160,6 @@ def test_mixed(epochs):
     passes = config.BAYESIAN_PASSES
     
     # Plot parameters
-    colours = config.COLOURS
     w = config.PLOT_W
     h = config.PLOT_H
     
@@ -182,12 +181,13 @@ def test_mixed(epochs):
         class_b = dataset['mixed_class_B']
         
         # Get model dir and mixed model dir
-        base_model_dir = "{}_{}-{}model_{}train_{}lr".format(
-                            name, l1_n, l2_n, p_train, learning_rate)
-        model_dir = base_model_dir + "/epoch_{}".format(epochs[name])
+        base_model_dir = (f"{name}_{l1_n}-{l2_n}model_{p_train}train"
+                          f"_{learning_rate}lr")
+        model_dir = os.path.join(base_model_dir, f"epoch_{epochs[name]}")
         model_dir = os.path.join(base_dir, model_dir)
-        mixed_model_dir = base_model_dir + "_{}-{}mixed/epoch_{}".format(
-                                            class_a, class_b, epochs[name])
+        mixed_model_dir = base_model_dir + "_{class_a}-{class_b}mixed")
+        mixed_model_dir = os.path.join(mixed_model_dir,
+                                       f"epoch_{epochs[name]}")
         mixed_model_dir = os.path.join(base_dir, mixed_model_dir)
         if not os.path.isdir(model_dir) or not os.path.isdir(mixed_model_dir):
             continue
@@ -196,12 +196,11 @@ def test_mixed(epochs):
         # ---------------------------------------------------------------------
         
         # Get dataset
-        X_train, _, X_test, y_test = get_dataset(dataset, d_path, p_train)
+        _, _, X_test, y_test = get_dataset(dataset, d_path, p_train)
         
         # Get mixed dataset
-        (m_X_train, _,
-         m_X_test, m_y_test) = get_mixed_dataset(dataset, d_path, p_train,
-                                                 class_a, class_b)
+        _, _, m_X_test, m_y_test = get_mixed_dataset(dataset, d_path, p_train,
+                                                     class_a, class_b)
         
         # LOAD MODELS
         # ---------------------------------------------------------------------
@@ -216,10 +215,10 @@ def test_mixed(epochs):
         # ---------------------------------------------------------------------
         
         # Mixed tests message
-        print("\n### Starting {} mixed test".format(name))
+        print(f"\n### Starting {name} mixed test")
         print('#'*80)
-        print("\nMODEL DIR: {}".format(model_dir))
-        print("MIXED MODEL DIR: {}".format(mixed_model_dir))
+        print(f"\nMODEL DIR: {model_dir}")
+        print(f"MIXED MODEL DIR: {mixed_model_dir}")
         
         # Launch predictions
         print("\n# Normal prediction")
@@ -239,14 +238,14 @@ def test_mixed(epochs):
         table += output_str
         
         # Plot class uncertainty
-        print("\n# Generating {} `class uncertainty` plot".format(name))
+        print(f"\n# Generating {name} `class uncertainty` plot")
         data = [[avg_Ep[class_a], avg_Ep[class_b], avg_Ep[-1]],
                 [m_avg_Ep[class_a], m_avg_Ep[class_b], m_avg_Ep[-1]]]
         plot_mixed_uncertainty(output_dir, name, epochs[name], data, class_a,
-                               class_b, w, h, colours)
+                               class_b, w, h)
     
     # Print table
-    print("\n### Mixed tests finished".format(name))
+    print("\n### Mixed tests finished")
     print('#'*80 + "\n")
     print(table, flush=True)
     

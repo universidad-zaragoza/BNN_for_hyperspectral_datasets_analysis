@@ -66,7 +66,7 @@ def _load_image(image_info, data_path):
     except:
         
         # Download image file
-        os.system("wget {} -O {}".format(image_info['url'], input_file))
+        os.system(f"wget {image_info['url']} -O {input_file}")
 	    
         # Load image file
         X = io.loadmat(input_file)[image_name]
@@ -80,7 +80,7 @@ def _load_image(image_info, data_path):
     except:
         
         # Download ground truth file
-        os.system("wget {} -O {}".format(image_info['url_gt'], label_file))
+        os.system(f"wget {image_info['url_gt']} -O {label_file}")
 	    
         # Load ground truth file
         y = io.loadmat(label_file)[image_info['key_gt']]
@@ -101,7 +101,7 @@ def _standardise(X):
         The received set of pixels standardised.
     """
     
-    return (X - X.mean(axis=0)) / X.std(axis=0)
+    return (X - X.mean(axis=0))/X.std(axis=0)
 
 def _normalise(X):
     """Normalises a set of hyperspectral pixels
@@ -118,7 +118,7 @@ def _normalise(X):
     """
     
     X -= X.min()
-    return X / X.max()
+    return X/X.max()
 
 def _preprocess(X, y, standardisation=False, only_labelled=True):
     """Preprocesses the hyperspectral image and ground truth data
@@ -164,7 +164,7 @@ def _preprocess(X, y, standardisation=False, only_labelled=True):
     elif standardisation:
         m = X[y > 0, :].mean(axis=0)
         s = X[y > 0, :].std(axis=0)
-        X = (X - m) / s
+        X = (X - m)/s
     
     return X, y
 
@@ -303,9 +303,9 @@ def get_noisy_dataset(dataset, data_path, p_train, noises, seed=35):
         noisy_X_tests.append(X_test + _generic_noise(X_test.shape, noise))
     
     # Standardise `X_train` and each `noisy_X_tests`
-    X_train = (X_train - X_mean) / X_std
+    X_train = (X_train - X_mean)/X_std
     for n, X_test in enumerate(noisy_X_tests):
-        noisy_X_tests[n] = (X_test - X_mean) / X_std
+        noisy_X_tests[n] = (X_test - X_mean)/X_std
     
     # Return train and test sets
     return X_train, y_train, noisy_X_tests, y_test

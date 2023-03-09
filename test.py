@@ -79,7 +79,7 @@ def _parse_args(dataset_list):
                         nargs=len(dataset_list),
                         help=("List of the epoch of the selected checkpoint "
                               "for testing each model. The order must "
-                              "correspond to: {}.".format(dataset_list)))
+                              f"correspond to: {dataset_list}."))
     
     # Return the analysed parameters
     return parser.parse_args()
@@ -133,7 +133,7 @@ def predict(model, X_test, y_test, samples=100):
     """
     
     # Bayesian stochastic passes
-    print("\nLaunching {} bayesian predictions".format(samples))
+    print(f"\nLaunching {samples} bayesian predictions")
     predictions = bayesian_predictions(model, X_test, samples=samples)
     
     # Reliability Diagram
@@ -209,8 +209,9 @@ def test(epochs):
         num_features = dataset['num_features']
         
         # Get model dir
-        model_dir = "{}_{}-{}model_{}train_{}lr/epoch_{}".format(
-                        name, l1_n, l2_n, p_train, learning_rate, epochs[name])
+        model_dir = (f"{name}_{l1_n}-{l2_n}model_{p_train}train"
+                     f"_{learning_rate}lr")
+        model_dir = os.path.join(model_dir, f"epoch_{epochs[name]}")
         model_dir = os.path.join(base_dir, model_dir)
         if not os.path.isdir(model_dir):
             reliability_data[name] = []
@@ -222,7 +223,7 @@ def test(epochs):
         # ---------------------------------------------------------------------
         
         # Get dataset
-        X_train, _, X_test, y_test = get_dataset(dataset, d_path, p_train)
+        _, _, X_test, y_test = get_dataset(dataset, d_path, p_train)
         
         # LOAD MODEL
         # ---------------------------------------------------------------------
@@ -234,9 +235,9 @@ def test(epochs):
         # ---------------------------------------------------------------------
         
         # Tests message
-        print("\n### Starting {} tests".format(name))
+        print(f"\n### Starting {name} tests")
         print('#'*80)
-        print("\nMODEL DIR: {}".format(model_dir))
+        print(f"\nMODEL DIR: {model_dir}")
         
         # Launch predictions
         (reliability_data[name],
@@ -252,7 +253,7 @@ def test(epochs):
         
         # Plot class uncertainty
         plot_class_uncertainty(output_dir, name, epochs[name], avg_Ep,
-                               avg_H_Ep, w, h, colours)
+                               avg_H_Ep, w, h)
     
     # End of tests message
     print("\n### Tests finished")
