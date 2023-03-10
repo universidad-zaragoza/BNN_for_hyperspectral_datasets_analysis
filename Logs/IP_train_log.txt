@@ -1,0 +1,120 @@
+
+### Starting the IP training on epoch 0
+################################################################################
+
+OUTPUT DIR: ./Models/IP_32-16model_0.5train_0.01lr
+
+CURRENT TIME: 177.56374502182007 seconds
+Epoch loss (1000): 0.8137033158540725
+Accuracy: 0.7836257219314575
+Epoch 1000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_1000
+
+CURRENT TIME: 357.27456498146057 seconds
+Epoch loss (2000): 0.8099364793300629
+Accuracy: 0.7855750322341919
+Epoch 2000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_2000
+
+CURRENT TIME: 537.7443854808807 seconds
+Epoch loss (3000): 0.7642829269170761
+Accuracy: 0.803118884563446
+Epoch 3000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_3000
+
+CURRENT TIME: 717.2803659439087 seconds
+Epoch loss (4000): 0.7664847785234451
+Accuracy: 0.7953216433525085
+Epoch 4000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_4000
+
+CURRENT TIME: 897.6501834392548 seconds
+Epoch loss (5000): 0.9618760412931442
+Accuracy: 0.8323586583137512
+Epoch 5000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_5000
+
+CURRENT TIME: 1079.1556193828583 seconds
+Epoch loss (6000): 0.7439211690425873
+Accuracy: 0.8245614171028137
+Epoch 6000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_6000
+
+CURRENT TIME: 1258.8246200084686 seconds
+Epoch loss (7000): 0.767945580482483
+Accuracy: 0.808966875076294
+Epoch 7000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_7000
+
+CURRENT TIME: 1439.7978374958038 seconds
+Epoch loss (8000): 0.768760913014412
+Accuracy: 0.8245614171028137
+Epoch 8000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_8000
+
+CURRENT TIME: 1620.7774605751038 seconds
+Epoch loss (9000): 0.8040253007411957
+Accuracy: 0.7348927855491638
+Epoch 9000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_9000
+
+CURRENT TIME: 1801.4240386486053 seconds
+Epoch loss (10000): 0.7382273161411286
+Accuracy: 0.8050682544708252
+Epoch 10000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_10000
+
+CURRENT TIME: 1982.1440737247467 seconds
+Epoch loss (11000): 0.7282457584142685
+Accuracy: 0.8187134265899658
+Epoch 11000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_11000
+
+CURRENT TIME: 2161.316067457199 seconds
+Epoch loss (12000): 0.7693072557449341
+Accuracy: 0.808966875076294
+Epoch 12000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_12000
+
+CURRENT TIME: 2342.4986934661865 seconds
+Epoch loss (13000): 0.7615620392560959
+Accuracy: 0.820662796497345
+Epoch 13000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_13000
+
+CURRENT TIME: 2524.69357585907 seconds
+Epoch loss (14000): 0.7913442528247834
+Accuracy: 0.8226121068000793
+Epoch 14000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_14000
+
+CURRENT TIME: 2707.415749311447 seconds
+Epoch loss (15000): 0.7439362698793411
+Accuracy: 0.8323586583137512
+Epoch 15000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_15000
+
+CURRENT TIME: 2888.85440659523 seconds
+Epoch loss (16000): 0.7797850000858307
+Accuracy: 0.820662796497345
+Epoch 16000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_16000
+
+CURRENT TIME: 3065.765149831772 seconds
+Epoch loss (17000): 0.775691055059433
+Accuracy: 0.8109161853790283
+Epoch 17000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_17000
+
+CURRENT TIME: 3244.4243144989014 seconds
+Epoch loss (18000): 0.757954608798027
+Accuracy: 0.8148148059844971
+Epoch 18000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_18000
+
+CURRENT TIME: 3422.8499760627747 seconds
+Epoch loss (19000): 0.7578081953525543
+Accuracy: 0.8109161853790283
+Epoch 19000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_19000
+
+CURRENT TIME: 3600.9872739315033 seconds
+Epoch loss (20000): 0.7077488386631012
+Accuracy: 0.8304093480110168
+Epoch 20000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_20000
+
+CURRENT TIME: 4735.632107496262 seconds
+Epoch loss (21000): 0.7784654498100281
+Accuracy: 0.803118884563446
+Epoch 21000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_21000
+
+CURRENT TIME: 8366.421856880188 seconds
+Epoch loss (22000): 0.9832078164815903
+Accuracy: 0.7797271013259888
+Epoch 22000: saving model to ./Models/IP_32-16model_0.5train_0.01lr/epoch_22000
+
+--- TRAIN END AT EPOCH 22000 ---
+TRAINING TIME: 8368.753197669983 seconds
+Epoch loss (22000): 0.9832078164815903
+Accuracy: 0.7797271013259888

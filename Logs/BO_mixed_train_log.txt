@@ -1,0 +1,95 @@
+
+### Starting the BO mixed training on epoch 0
+################################################################################
+
+OUTPUT DIR: ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed
+
+CURRENT TIME: 51.98692011833191 seconds
+Epoch loss (1000): 0.7569963133335114
+Accuracy: 0.8343558311462402
+Epoch 1000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_1000
+
+CURRENT TIME: 104.32829213142395 seconds
+Epoch loss (2000): 0.6919828724861145
+Accuracy: 0.8773006200790405
+Epoch 2000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_2000
+
+CURRENT TIME: 156.751868724823 seconds
+Epoch loss (3000): 0.6755258685350418
+Accuracy: 0.8466257452964783
+Epoch 3000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_3000
+
+CURRENT TIME: 209.15576553344727 seconds
+Epoch loss (4000): 0.6819965654611587
+Accuracy: 0.7852760553359985
+Epoch 4000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_4000
+
+CURRENT TIME: 261.58228516578674 seconds
+Epoch loss (5000): 0.6331772050261497
+Accuracy: 0.8527607321739197
+Epoch 5000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_5000
+
+CURRENT TIME: 314.49982810020447 seconds
+Epoch loss (6000): 0.6560900670289993
+Accuracy: 0.8650306463241577
+Epoch 6000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_6000
+
+CURRENT TIME: 366.9407579898834 seconds
+Epoch loss (7000): 0.6130373853445054
+Accuracy: 0.8343558311462402
+Epoch 7000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_7000
+
+CURRENT TIME: 419.44900941848755 seconds
+Epoch loss (8000): 0.5907635736465454
+Accuracy: 0.8343558311462402
+Epoch 8000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_8000
+
+CURRENT TIME: 471.8699402809143 seconds
+Epoch loss (9000): 0.6028927806019783
+Accuracy: 0.7668711543083191
+Epoch 9000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_9000
+
+CURRENT TIME: 861.333550453186 seconds
+Epoch loss (10000): 0.5906842124462127
+Accuracy: 0.8466257452964783
+Epoch 10000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_10000
+
+CURRENT TIME: 918.3828299045563 seconds
+Epoch loss (11000): 0.6355973500013351
+Accuracy: 0.8098159432411194
+Epoch 11000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_11000
+
+CURRENT TIME: 973.9903841018677 seconds
+Epoch loss (12000): 0.5704790273308754
+Accuracy: 0.8343558311462402
+Epoch 12000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_12000
+
+CURRENT TIME: 1028.2461972236633 seconds
+Epoch loss (13000): 0.6226387986540795
+Accuracy: 0.8466257452964783
+Epoch 13000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_13000
+
+CURRENT TIME: 1084.0438277721405 seconds
+Epoch loss (14000): 0.590047322511673
+Accuracy: 0.8098159432411194
+Epoch 14000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_14000
+
+CURRENT TIME: 1139.1684153079987 seconds
+Epoch loss (15000): 0.6635874044895173
+Accuracy: 0.803680956363678
+Epoch 15000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_15000
+
+CURRENT TIME: 1194.5965538024902 seconds
+Epoch loss (16000): 0.6021859484910965
+Accuracy: 0.8282208442687988
+Epoch 16000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_16000
+
+CURRENT TIME: 1250.6224174499512 seconds
+Epoch loss (17000): 0.5999416434764862
+Accuracy: 0.8098159432411194
+Epoch 17000: saving model to ./Models/BO_32-16model_0.5train_0.01lr_4-5mixed/epoch_17000
+
+--- TRAIN END AT EPOCH 17000 ---
+TRAINING TIME: 1252.458333492279 seconds
+Epoch loss (17000): 0.5999416434764862
+Accuracy: 0.8098159432411194
