@@ -25,6 +25,7 @@
         <ul>
   <li><a href="#bnn_for_hyperspectral_datasets_analysis">BNN_for_hyperspectral_datasets_analysis</a>
   <ul>
+    <li><a href="#citations">Citations</a></li>
     <li><a href="#how-to-run">How to run</a></li>
     <li><a href="#use-and-files-explanation">Use and files explanation</a></li>
   </ul></li>
@@ -65,6 +66,10 @@ bnn4hi    </h1>
   <p>git clone <a href="https://github.com/universidad-zaragoza/BNN_for_hyperspectral_datasets_analysis.git">https://github.com/universidad-zaragoza/BNN_for_hyperspectral_datasets_analysis.git</a> bnn4hi</p>
 </blockquote>
 
+<p>The repository also contains the results of the entire execution. If you only need the code and documentation to test it or use it as a library, you can download and launch the <em>download.sh</em> script. It uses <em>wget</em> command to retrieve the necessary files without the results of previous executions.</p>
+
+<h2 id="citations">Citations</h2>
+
 <p>This is the code of the paper <em>Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics</em>. If it is useful to you, please cite:</p>
 
 <p>A. Alcolea and J. Resano, "Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics", in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-10, 2022, doi: 10.1109/TGRS.2022.3205119.</p>
@@ -81,7 +86,7 @@ doi = {10.1109/TGRS.2022.3205119} <br />
 
 <h2 id="how-to-run">How to run</h2>
 
-<p>Note that the entire execution of the <em>launch</em> script may take more than 24 hours. That includes training the models for 100 epochs (which should be fast), launching all the tests (the <em>map</em> and <em>noise</em> tests will take the longest), and then training again for 100 epochs with mixed classes and launching the <em>mixed</em> test. In case that everything works fine, training for thousands of epochs may last even longer (and it will be necessary to repeat all the tests).</p>
+<p>Note that the entire execution of the <em>launch.sh</em> script may take more than 24 hours. That includes training the models for 100 epochs (which should be fast), launching all the tests (the <em>map</em> and <em>noise</em> tests will take the longest), and then training again for 100 epochs with mixed classes and launching the <em>mixed</em> test. In case that everything works fine, training for thousands of epochs may last even longer (and it will be necessary to repeat all the tests).</p>
 
 <h3 id="with-the-sh-script">With the 'sh' script</h3>
 
