@@ -6,6 +6,10 @@ We will refer to the repository as `bnn4hi`. To clone it, it is recommended to c
 
 > git clone https://github.com/universidad-zaragoza/BNN_for_hyperspectral_datasets_analysis.git bnn4hi
 
+The repository also contains the results of the entire execution. If you only need the code and documentation to test it or use it as a library, you can download and launch the *download.sh* script. It uses *wget* command to retrieve the necessary files without the results of previous executions.
+
+## Citations
+
 This is the code of the paper *Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics*. If it is useful to you, please cite:
 
 A. Alcolea and J. Resano, "Bayesian Neural Networks to Analyze Hyperspectral Datasets Using Uncertainty Metrics", in IEEE Transactions on Geoscience and Remote Sensing, vol. 60, pp. 1-10, 2022, doi: 10.1109/TGRS.2022.3205119.
@@ -22,7 +26,7 @@ doi = {10.1109/TGRS.2022.3205119}
 
 ## How to run
 
-Note that the entire execution of the *launch* script may take more than 24 hours. That includes training the models for 100 epochs (which should be fast), launching all the tests (the *map* and *noise* tests will take the longest), and then training again for 100 epochs with mixed classes and launching the *mixed* test. In case that everything works fine, training for thousands of epochs may last even longer (and it will be necessary to repeat all the tests).
+Note that the entire execution of the *launch.sh* script may take more than 24 hours. That includes training the models for 100 epochs (which should be fast), launching all the tests (the *map* and *noise* tests will take the longest), and then training again for 100 epochs with mixed classes and launching the *mixed* test. In case that everything works fine, training for thousands of epochs may last even longer (and it will be necessary to repeat all the tests).
 
 ### With the 'sh' script
 
